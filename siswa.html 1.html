@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X TJKT 1 // Daftar Siswa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <div class="logo"><span class="logo-mark">TJ</span> X TJKT 1</div>
+    <div class="nav-links">
+      <a href="index.html">Beranda</a>
+      <a href="tentang.html">Tentang TJKT</a>
+      <a href="struktur.html">Struktur Kelas</a>
+      <a href="galeri.html">Galeri</a>
+      <a href="siswa.html" class="active">Daftar Siswa</a>
+    </div>
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Beranda</a>
+  <a href="tentang.html">Tentang TJKT</a>
+  <a href="struktur.html">Struktur Kelas</a>
+  <a href="galeri.html">Galeri</a>
+  <a href="siswa.html" class="active">Daftar Siswa</a>
+</div>
+
+<header class="page-head struktur">
+  <div class="container">
+    <div class="eyebrow">Anggota Kelas</div>
+    <h1>Daftar <span class="gradient-text">Siswa</span></h1>
+    <p>Seluruh siswa yang tergabung dalam kelas X TJKT 1.</p>
+  </div>
+</header>
+
+<section id="siswa" class="struktur">
+  <div class="container">
+
+    <!-- STATISTIK -->
+    <div class="siswa-stats fade-up">
+      <div class="stat-card">
+        <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-label">Total Siswa</div>
+      </div>
+      <div class="stat-card accent-blue">
+        <div class="stat-value" id="statLaki">0</div>
+        <div class="stat-label">Laki-laki</div>
+      </div>
+      <div class="stat-card accent-pink">
+        <div class="stat-value" id="statPerempuan">0</div>
+        <div class="stat-label">Perempuan</div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="siswa-toolbar fade-up">
+      <input type="text" class="siswa-search" id="siswaSearch" placeholder="Cari nama siswa...">
+      <div class="siswa-filters" id="siswaFilters">
+        <button class="filter-btn active" data-filter="semua">Semua</button>
+        <button class="filter-btn" data-filter="Laki-laki">Laki-laki</button>
+        <button class="filter-btn" data-filter="Perempuan">Perempuan</button>
+      </div>
+      <span class="siswa-count" id="siswaCount">36 siswa</span>
+    </div>
+
+    <!-- TABEL -->
+    <div class="siswa-table-wrap fade-up">
+      <table class="siswa-table" id="siswaTable">
+        <thead>
+          <tr>
+            <th class="no">No</th>
+            <th class="sortable" data-sort="nama">Nama Siswa <span class="sort-icon">↕</span></th>
+            <th class="sortable" data-sort="absen">No. Absen <span class="sort-icon">↕</span></th>
+            <th class="sortable" data-sort="jk">Jenis Kelamin <span class="sort-icon">↕</span></th>
+          </tr>
+        </thead>
+        <tbody id="siswaBody">
+          <!-- baris digenerate otomatis lewat JS -->
+        </tbody>
+      </table>
+      <div class="siswa-empty" id="siswaEmpty">
+        <span class="empty-icon">🔍</span>
+        <p>Siswa tidak ditemukan.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2026 Kelas X TJKT 1 — Teknik Jaringan Komputer dan Telekomunikasi</p>
+    <p class="mono">// dibuat dengan semangat konektivitas</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
