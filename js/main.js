@@ -190,3 +190,17 @@ if (backToTop) {
     window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
   });
 }
+
+// ===== JADWAL PELAJARAN (day tabs) =====
+const dayTabs = document.getElementById('dayTabs');
+if (dayTabs) {
+  const tabs = dayTabs.querySelectorAll('.day-tab');
+  const days = document.querySelectorAll('.schedule-day');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const day = tab.dataset.day;
+      tabs.forEach(t => t.classList.toggle('active', t === tab));
+      days.forEach(d => d.classList.toggle('active', d.dataset.day === day));
+    });
+  });
+}

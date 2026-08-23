@@ -499,6 +499,83 @@ html[data-theme="light"] .theme-toggle .icon-sun{display:block;}
   .loader-fill{animation:none;width:100%;}
 }
 
+/* ===== JADWAL PELAJARAN ===== */
+.day-tabs{
+  display:flex;gap:10px;margin-bottom:32px;flex-wrap:wrap;
+}
+.day-tab{
+  font-family:'Space Grotesk';font-weight:600;font-size:.88rem;
+  padding:11px 22px;border-radius:10px;
+  background:var(--card);border:1px solid var(--border);color:var(--muted);
+  cursor:pointer;transition:.25s;
+}
+.day-tab:hover{color:var(--text);border-color:rgba(34,211,238,.35);}
+.day-tab.active{
+  background:linear-gradient(90deg,var(--cyan),var(--blue));
+  color:#031017;border-color:transparent;
+}
+.schedule-wrap{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:8px;overflow:hidden;
+}
+.schedule-day{display:none;}
+.schedule-day.active{display:block;}
+.schedule-item{
+  display:flex;align-items:center;gap:20px;
+  padding:16px 20px;border-bottom:1px solid var(--border);
+}
+.schedule-item:last-child{border-bottom:none;}
+.schedule-item .jam{
+  font-family:'Space Grotesk';font-size:.82rem;color:var(--cyan);
+  min-width:130px;flex-shrink:0;
+}
+.schedule-item .mapel{color:var(--text);font-size:.95rem;}
+.schedule-item.break{background:rgba(139,92,246,.06);}
+.schedule-item.break .jam{color:var(--purple);}
+.schedule-item.break .mapel{color:var(--muted);font-style:italic;}
+.jadwal-note{
+  margin-top:22px;color:var(--muted);font-size:.85rem;
+  background:var(--card);border:1px solid var(--border);
+  padding:14px 18px;border-radius:10px;
+}
+
+/* ===== PENGUMUMAN ===== */
+.announce{padding:70px 0 0;}
+.announce-list{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;
+}
+.announce-item{
+  display:flex;gap:16px;padding:20px 24px;border-bottom:1px solid var(--border);
+}
+.announce-item:last-child{border-bottom:none;}
+.announce-dot{
+  width:9px;height:9px;border-radius:50%;background:var(--border);
+  margin-top:6px;flex-shrink:0;
+}
+.announce-dot.new{background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
+.announce-top{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.announce-tag{
+  font-family:'Space Grotesk';font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;
+  background:rgba(139,92,246,.14);color:var(--purple);
+  padding:3px 10px;border-radius:6px;
+}
+.announce-date{font-family:'Space Grotesk';font-size:.75rem;color:var(--muted);}
+.announce-body p{color:var(--text);font-size:.9rem;}
+
+/* ===== 404 PAGE ===== */
+.notfound-wrap{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 24px;text-align:center;gap:20px;position:relative;z-index:1;
+}
+.notfound-title{
+  font-family:'Space Grotesk';font-weight:700;font-size:clamp(3.5rem,10vw,6rem);
+  background:linear-gradient(90deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  line-height:1;margin-top:12px;
+}
+.notfound-text{color:var(--muted);max-width:420px;}
+
 /* ===== FOOTER ===== */
 footer{
   border-top:1px solid var(--border);padding:40px 0;text-align:center;
@@ -523,6 +600,12 @@ footer .mono{color:var(--cyan);}
 }
 @media(max-width:640px){
   .network-decor{display:none;}
+}
+@media(max-width:520px){
+  .schedule-item{flex-direction:column;align-items:flex-start;gap:4px;}
+  .schedule-item .jam{min-width:auto;}
+  .day-tabs{gap:8px;}
+  .day-tab{padding:9px 16px;font-size:.82rem;}
 }
 @media(max-width:720px){
   .nav-links{display:none;}

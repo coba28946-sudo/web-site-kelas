@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 // Halaman Tidak Ditemukan — X TJKT 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script>
+(function(){
+  var t = localStorage.getItem('theme');
+  if (t === 'light') document.documentElement.setAttribute('data-theme','light');
+})();
+</script>
+</head>
+<body>
+
+<div class="hero-bg-grid" style="position:fixed;"></div>
+
+<div class="notfound-wrap">
+  <div class="terminal" style="max-width:460px;width:100%;">
+    <div class="terminal-head">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="terminal-title">kelas@tjkt1: ~/404</span>
+    </div>
+    <div class="terminal-body" style="font-size:.9rem;">
+      <div class="line" style="width:auto;"><span class="prompt">$</span> curl halaman-ini</div>
+      <div class="line" style="width:auto;color:#f87171;">Error 404: Not Found</div>
+      <div class="line" style="width:auto;">&nbsp;</div>
+      <div class="line comment" style="width:auto;"># halaman yang kamu cari nggak ketemu di jaringan ini</div>
+    </div>
+  </div>
+
+  <h1 class="notfound-title">404</h1>
+  <p class="notfound-text">Halaman yang kamu cari tidak tersedia, mungkin salah ketik alamat atau sudah dipindahkan.</p>
+  <a href="index.html" class="btn btn-primary">← Kembali ke Beranda</a>
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>
