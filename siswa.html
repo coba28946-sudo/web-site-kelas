@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X TJKT 1 // Daftar Siswa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <div class="logo"><span class="logo-mark">TJ</span> X TJKT 1</div>
+    <div class="nav-links">
+      <a href="index.html">Beranda</a>
+      <a href="tentang.html">Tentang TJKT</a>
+      <a href="struktur.html">Struktur Kelas</a>
+      <a href="galeri.html">Galeri</a>
+      <a href="siswa.html" class="active">Daftar Siswa</a>
+    </div>
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Beranda</a>
+  <a href="tentang.html">Tentang TJKT</a>
+  <a href="struktur.html">Struktur Kelas</a>
+  <a href="galeri.html">Galeri</a>
+  <a href="siswa.html" class="active">Daftar Siswa</a>
+</div>
+
+<header class="page-head struktur">
+  <div class="network-decor" aria-hidden="true">
+    <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="netGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#22d3ee"/>
+          <stop offset="100%" stop-color="#8b5cf6"/>
+        </linearGradient>
+      </defs>
+      <line class="n-line" x1="40" y1="60" x2="220" y2="140"/>
+      <line class="n-line slow" x1="220" y1="140" x2="180" y2="300"/>
+      <line class="n-line" x1="220" y1="140" x2="360" y2="90"/>
+      <line class="n-line slow" x1="180" y1="300" x2="340" y2="330"/>
+      <line class="n-line" x1="360" y1="90" x2="340" y2="330"/>
+      <line class="n-line slow" x1="40" y1="60" x2="180" y2="300"/>
+      <circle class="n-dot" cx="40" cy="60" r="4"/>
+      <circle class="n-dot" cx="220" cy="140" r="5"/>
+      <circle class="n-dot" cx="360" cy="90" r="4"/>
+      <circle class="n-dot" cx="180" cy="300" r="4"/>
+      <circle class="n-dot" cx="340" cy="330" r="5"/>
+    </svg>
+  </div>
+  <div class="container">
+    <div class="eyebrow">Anggota Kelas</div>
+    <h1>Daftar <span class="gradient-text">Siswa</span></h1>
+    <p>Seluruh siswa yang tergabung dalam kelas X TJKT 1.</p>
+  </div>
+</header>
+
+<section id="siswa" class="struktur">
+  <div class="container">
+    <div class="siswa-toolbar fade-up">
+      <input type="text" class="siswa-search" id="siswaSearch" placeholder="Cari nama siswa...">
+      <span class="siswa-count" id="siswaCount">36 siswa</span>
+    </div>
+
+    <div class="siswa-table-wrap fade-up">
+      <table class="siswa-table" id="siswaTable">
+        <thead>
+          <tr>
+            <th class="no">No</th>
+            <th>Nama Siswa</th>
+            <th>No. Absen</th>
+            <th>Jenis Kelamin</th>
+          </tr>
+        </thead>
+        <tbody id="siswaBody">
+          <!-- baris digenerate otomatis lewat JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2026 Kelas X TJKT 1 — Teknik Jaringan Komputer dan Telekomunikasi</p>
+    <p class="mono">// dibuat dengan semangat konektivitas</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
