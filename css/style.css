@@ -303,9 +303,35 @@ section{padding:110px 0;position:relative;}
 .galeri-overlay span{font-family:'Space Grotesk';font-size:.8rem;color:var(--text);}
 
 /* ===== DAFTAR SISWA ===== */
+.siswa-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;
+}
+.stat-card{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:22px 24px;position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--cyan),var(--blue));
+}
+.stat-card.accent-blue::before{background:linear-gradient(90deg,var(--blue),var(--purple));}
+.stat-card.accent-pink::before{background:linear-gradient(90deg,#ec4899,var(--purple));}
+.stat-value{font-family:'Space Grotesk';font-size:2rem;font-weight:700;line-height:1;}
+.stat-card.accent-blue .stat-value{color:var(--blue);}
+.stat-card.accent-pink .stat-value{color:#ec4899;}
+.stat-label{color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;margin-top:8px;font-family:'Space Grotesk';}
+
 .siswa-toolbar{
   display:flex;gap:14px;margin-bottom:28px;flex-wrap:wrap;align-items:center;justify-content:space-between;
 }
+.siswa-filters{display:flex;gap:8px;flex-wrap:wrap;}
+.filter-btn{
+  font-family:'Space Grotesk';font-size:.8rem;color:var(--muted);
+  background:transparent;border:1px solid var(--border);border-radius:8px;
+  padding:9px 16px;cursor:pointer;transition:.2s;
+}
+.filter-btn:hover{color:var(--text);border-color:rgba(34,211,238,.35);}
+.filter-btn.active{color:var(--cyan);border-color:var(--cyan);background:rgba(34,211,238,.08);}
 .siswa-search{
   flex:1;min-width:220px;
   background:var(--card);border:1px solid var(--border);border-radius:10px;
@@ -327,6 +353,11 @@ table.siswa-table{width:100%;border-collapse:collapse;font-size:.92rem;}
   font-family:'Space Grotesk';font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
   color:var(--cyan);background:#0b1220;border-bottom:1px solid var(--border);
 }
+.siswa-table th.sortable{cursor:pointer;user-select:none;transition:.2s;}
+.siswa-table th.sortable:hover{color:var(--text);}
+.siswa-table th.sortable .sort-icon{margin-left:5px;opacity:.45;font-size:.7rem;}
+.siswa-table th.sortable.sort-asc .sort-icon,
+.siswa-table th.sortable.sort-desc .sort-icon{opacity:1;color:var(--cyan);}
 .siswa-table tbody td{
   padding:14px 20px;border-bottom:1px solid var(--border);color:var(--text);
 }
@@ -334,12 +365,29 @@ table.siswa-table{width:100%;border-collapse:collapse;font-size:.92rem;}
 .siswa-table tbody tr{transition:.2s;}
 .siswa-table tbody tr:hover{background:rgba(34,211,238,.05);}
 .siswa-table .no{color:var(--muted);width:44px;}
+.siswa-name{display:flex;align-items:center;gap:12px;}
+.mini-avatar{
+  width:32px;height:32px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Grotesk';font-weight:600;font-size:.7rem;color:#03060c;
+}
 .siswa-table .absen{
   display:inline-block;font-family:'Space Grotesk';font-size:.72rem;
   background:rgba(139,92,246,.14);color:var(--purple);
   padding:3px 10px;border-radius:6px;
 }
+.badge{
+  display:inline-block;font-family:'Space Grotesk';font-size:.74rem;
+  padding:4px 12px;border-radius:20px;border:1px solid transparent;
+}
+.badge.laki{background:rgba(59,130,246,.14);color:var(--blue);border-color:rgba(59,130,246,.3);}
+.badge.perempuan{background:rgba(236,72,153,.14);color:#ec4899;border-color:rgba(236,72,153,.3);}
 .row-hidden{display:none;}
+.siswa-table-wrap.is-empty .siswa-table{display:none;}
+.siswa-empty{display:none;text-align:center;padding:70px 20px;color:var(--muted);}
+.siswa-empty.visible{display:block;}
+.siswa-empty .empty-icon{font-size:1.8rem;display:block;margin-bottom:12px;opacity:.6;}
+.siswa-empty p{font-family:'Space Grotesk';font-size:.9rem;}
 
 /* ===== FOOTER ===== */
 footer{
@@ -381,6 +429,9 @@ footer .mono{color:var(--cyan);}
   .galeri-grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:120px;}
   .galeri-item.wide{grid-column:span 2;}
   .siswa-toolbar{flex-direction:column;align-items:stretch;}
+  .siswa-filters{width:100%;}
+  .filter-btn{flex:1;text-align:center;}
+  .siswa-stats{grid-template-columns:1fr;}
   .siswa-table-wrap{overflow-x:auto;}
   table.siswa-table{min-width:520px;}
 }
