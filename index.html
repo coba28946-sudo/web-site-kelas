@@ -7,8 +7,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script>
+(function(){
+  var t = localStorage.getItem('theme');
+  if (t === 'light') document.documentElement.setAttribute('data-theme','light');
+})();
+</script>
 </head>
 <body>
+
+<div class="page-loader" id="pageLoader">
+  <div class="loader-mark">TJ</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
 
 <nav class="navbar" id="navbar">
   <div class="container nav-inner">
@@ -20,7 +31,13 @@
       <a href="galeri.html">Galeri</a>
       <a href="siswa.html">Daftar Siswa</a>
     </div>
-    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Ganti tema terang/gelap">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.5A8.5 8.5 0 1 1 11.5 3a7 7 0 0 0 9.5 9.5z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.5 1.5M18.3 18.3l1.5 1.5M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.5-1.5M18.3 5.7l1.5-1.5"/></svg>
+      </button>
+      <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
   </div>
 </nav>
 
@@ -67,6 +84,30 @@
   </div>
 </section>
 
+<!-- STATISTIK -->
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid fade-up">
+      <div class="stat-card">
+        <div class="stat-number" data-target="36">0</div>
+        <div class="stat-label">Siswa Aktif</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-target="12">0</div>
+        <div class="stat-label">Pengurus Kelas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-target="4">0</div>
+        <div class="stat-label">Bidang Kompetensi</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-target="100" data-suffix="%">0%</div>
+        <div class="stat-label">Kompak & Solid</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- QUICK LINKS -->
 <section class="quicklinks">
   <div class="container">
@@ -76,25 +117,25 @@
       <p>Semua info kelas X TJKT 1 ada di halaman-halaman berikut.</p>
     </div>
     <div class="quick-grid">
-      <a href="tentang.html" class="quick-card fade-up">
+      <a href="tentang.html" class="quick-card tilt fade-up">
         <div class="quick-icon">📘</div>
         <h3>Tentang TJKT</h3>
         <p>Kenali jurusan, kompetensi, dan keunggulannya.</p>
         <span class="go">Buka halaman →</span>
       </a>
-      <a href="struktur.html" class="quick-card fade-up">
+      <a href="struktur.html" class="quick-card tilt fade-up">
         <div class="quick-icon">🧩</div>
         <h3>Struktur Kelas</h3>
         <p>Wali kelas dan susunan pengurus kelas.</p>
         <span class="go">Buka halaman →</span>
       </a>
-      <a href="galeri.html" class="quick-card fade-up">
+      <a href="galeri.html" class="quick-card tilt fade-up">
         <div class="quick-icon">📷</div>
         <h3>Galeri</h3>
         <p>Dokumentasi kegiatan dan momen kelas.</p>
         <span class="go">Buka halaman →</span>
       </a>
-      <a href="siswa.html" class="quick-card fade-up">
+      <a href="siswa.html" class="quick-card tilt fade-up">
         <div class="quick-icon">🧑‍🤝‍🧑</div>
         <h3>Daftar Siswa</h3>
         <p>Semua anggota kelas X TJKT 1.</p>
@@ -110,6 +151,10 @@
     <p class="mono">// dibuat dengan semangat konektivitas</p>
   </div>
 </footer>
+
+<button class="back-to-top" id="backToTop" aria-label="Kembali ke atas">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
 
 <script src="js/main.js"></script>
 </body>

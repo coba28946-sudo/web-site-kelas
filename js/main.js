@@ -22,16 +22,100 @@ if (burger && mobileMenu) {
   });
 }
 
-// Scroll fade-up animation
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Scroll fade-up animation + trigger skill bars & counters when visible
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       entry.target.classList.add('visible');
+
+      // Skill bar fill
+      const fills = entry.target.querySelectorAll('.skill-fill');
+      fills.forEach(f => {
+        const target = f.dataset.skill || 0;
+        f.style.width = target + '%';
+      });
+
+      // Number counters
+      const counters = entry.target.querySelectorAll('.stat-number');
+      counters.forEach(el => {
+        if (el.dataset.done) return;
+        el.dataset.done = '1';
+        const target = parseInt(el.dataset.target || el.textContent, 10);
+        if (isNaN(target)) return;
+        const suffix = el.dataset.suffix || '';
+        if (prefersReducedMotion) {
+          el.textContent = target + suffix;
+          return;
+        }
+        const duration = 1100;
+        const start = performance.now();
+        function tick(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.round(eased * target) + suffix;
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
     }
   });
 }, { threshold: 0.15 });
 
 document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// Terminal typewriter effect (hero page only)
+function initTypewriter() {
+  const lines = document.querySelectorAll('.terminal-body .line');
+  if (!lines.length) return;
+
+  if (prefersReducedMotion) {
+    lines.forEach(l => { l.style.width = 'auto'; });
+    return;
+  }
+
+  let i = 0;
+  function typeNext() {
+    if (i >= lines.length) return;
+    const line = lines[i];
+    line.style.width = '0';
+    // force reflow so transition restarts cleanly
+    void line.offsetWidth;
+    const fullWidth = line.scrollWidth;
+    const len = line.textContent.length || 1;
+    const duration = Math.min(Math.max(len * 16, 120), 700);
+    line.style.transition = `width ${duration}ms steps(${len}, end)`;
+    requestAnimationFrame(() => {
+      line.style.width = fullWidth + 'px';
+    });
+    setTimeout(() => {
+      i++;
+      typeNext();
+    }, duration + 90);
+  }
+  typeNext();
+}
+initTypewriter();
+
+// Tilt hover effect on cards
+if (!prefersReducedMotion) {
+  document.querySelectorAll('.tilt').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const cx = rect.width / 2;
+      const cy = rect.height / 2;
+      const rotateX = ((y - cy) / cy) * -5;
+      const rotateY = ((x - cx) / cx) * 5;
+      card.style.transform = `perspective(700px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
+}
 
 // Generate daftar siswa (placeholder, edit sesuai data kelas asli) - hanya jalan di siswa.html
 const siswaBody = document.getElementById('siswaBody');
@@ -65,4 +149,44 @@ if (siswaBody) {
       if (siswaCount) siswaCount.textContent = `${visible} siswa`;
     });
   }
+}
+
+// ===== LOADING SCREEN =====
+const pageLoader = document.getElementById('pageLoader');
+if (pageLoader) {
+  function hideLoader() {
+    pageLoader.classList.add('loaded');
+    setTimeout(() => pageLoader.remove(), 600);
+  }
+  if (document.readyState === 'complete') {
+    setTimeout(hideLoader, 350);
+  } else {
+    window.addEventListener('load', () => setTimeout(hideLoader, 350));
+  }
+}
+
+// ===== THEME TOGGLE (dark / light) =====
+const themeToggle = document.getElementById('themeToggle');
+if (themeToggle) {
+  themeToggle.addEventListener('click', () => {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('theme', 'light');
+    }
+  });
+}
+
+// ===== BACK TO TOP =====
+const backToTop = document.getElementById('backToTop');
+if (backToTop) {
+  window.addEventListener('scroll', () => {
+    backToTop.classList.toggle('visible', window.scrollY > 420);
+  });
+  backToTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+  });
 }

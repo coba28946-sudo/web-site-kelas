@@ -7,8 +7,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script>
+(function(){
+  var t = localStorage.getItem('theme');
+  if (t === 'light') document.documentElement.setAttribute('data-theme','light');
+})();
+</script>
 </head>
 <body>
+
+<div class="page-loader" id="pageLoader">
+  <div class="loader-mark">TJ</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
 
 <nav class="navbar" id="navbar">
   <div class="container nav-inner">
@@ -20,7 +31,13 @@
       <a href="galeri.html" class="active">Galeri</a>
       <a href="siswa.html">Daftar Siswa</a>
     </div>
-    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Ganti tema terang/gelap">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.5A8.5 8.5 0 1 1 11.5 3a7 7 0 0 0 9.5 9.5z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.5 1.5M18.3 18.3l1.5 1.5M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.5-1.5M18.3 5.7l1.5-1.5"/></svg>
+      </button>
+      <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
   </div>
 </nav>
 
@@ -34,10 +51,35 @@
 
 <header class="page-head">
   <div class="hero-bg-grid"></div>
+  <div class="network-decor" aria-hidden="true">
+    <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="netGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#22d3ee"/>
+          <stop offset="100%" stop-color="#8b5cf6"/>
+        </linearGradient>
+      </defs>
+      <line class="n-line" x1="40" y1="60" x2="220" y2="140"/>
+      <line class="n-line slow" x1="220" y1="140" x2="180" y2="300"/>
+      <line class="n-line" x1="220" y1="140" x2="360" y2="90"/>
+      <line class="n-line slow" x1="180" y1="300" x2="340" y2="330"/>
+      <line class="n-line" x1="360" y1="90" x2="340" y2="330"/>
+      <line class="n-line slow" x1="40" y1="60" x2="180" y2="300"/>
+      <circle class="n-dot" cx="40" cy="60" r="4"/>
+      <circle class="n-dot" cx="220" cy="140" r="5"/>
+      <circle class="n-dot" cx="360" cy="90" r="4"/>
+      <circle class="n-dot" cx="180" cy="300" r="4"/>
+      <circle class="n-dot" cx="340" cy="330" r="5"/>
+    </svg>
+  </div>
   <div class="container">
     <div class="eyebrow">Dokumentasi</div>
     <h1>Galeri <span class="gradient-text">Foto Kelas</span></h1>
     <p>Momen-momen kelas X TJKT 1 — dari kegiatan praktik, acara kelas, hingga kebersamaan sehari-hari.</p>
+    <div class="head-badges">
+      <span class="head-badge">📷 8 Momen Terpilih</span>
+      <span class="head-badge">✨ Terus Diperbarui</span>
+    </div>
   </div>
 </header>
 
@@ -86,6 +128,10 @@
     <p class="mono">// dibuat dengan semangat konektivitas</p>
   </div>
 </footer>
+
+<button class="back-to-top" id="backToTop" aria-label="Kembali ke atas">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
 
 <script src="js/main.js"></script>
 </body>
