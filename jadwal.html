@@ -31,12 +31,15 @@
   .jadwal-day h3{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;margin-bottom:6px}
   .jadwal-day .tanggal{opacity:.6;font-size:.85rem;margin-bottom:16px;display:block}
   .jadwal-table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:12px}
-  .jadwal-table th,.jadwal-table td{padding:12px 16px;text-align:left;border-bottom:1px solid rgba(128,128,128,.15);font-size:.92rem}
-  .jadwal-table th{font-family:'Space Grotesk',sans-serif;font-weight:600;opacity:.7;font-size:.8rem;text-transform:uppercase;letter-spacing:.03em}
+  .jadwal-table th,.jadwal-table td{padding:12px 16px;text-align:left;border-bottom:1px solid rgba(255,255,255,.12);font-size:.92rem}
+  .jadwal-table th{font-family:'Space Grotesk',sans-serif;font-weight:600;opacity:.7;font-size:.8rem;text-transform:uppercase;letter-spacing:.03em;background:rgba(255,255,255,.04)}
   .jadwal-table td.jam{white-space:nowrap;font-family:'Space Grotesk',sans-serif;opacity:.75}
   .jadwal-table tr.istirahat td{opacity:.5;font-style:italic}
   .jadwal-table .guru{opacity:.6;font-size:.8rem}
-  .jadwal-wrap{overflow-x:auto;border:1px solid rgba(128,128,128,.15);border-radius:12px}
+  .jadwal-wrap{overflow-x:auto;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:rgba(255,255,255,.02)}
+  [data-theme="light"] .jadwal-table th,[data-theme="light"] .jadwal-table td{border-color:rgba(0,0,0,.1)}
+  [data-theme="light"] .jadwal-table th{background:rgba(0,0,0,.03)}
+  [data-theme="light"] .jadwal-wrap{border-color:rgba(0,0,0,.15);background:rgba(0,0,0,.01)}
 </style>
 </head>
 <body>
