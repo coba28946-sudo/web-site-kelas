@@ -349,14 +349,15 @@ const SITE_DATA = {
   },
   "piket": {
     "senin": {
-      "kelompok": "Kelompok 1",
+      "kelompok": "kelompok 1 ",
       "anggota": [
-        "Nama Siswa 1",
-        "Nama Siswa 2",
-        "Nama Siswa 3",
-        "Nama Siswa 4",
-        "Nama Siswa 5",
-        "Nama Siswa 6"
+        "ADLI ALVANNO ",
+        "AKBAR SETO NUGROHO",
+        "ALDIO ADISTYA ASHARI",
+        "ALFREDO ELANDA",
+        "ANDIKA CANDRA",
+        "AYU SEVINA ",
+        "ESI ERLIANTI"
       ],
       "tugas": [
         "Menyapu dan mengepel lantai kelas",
