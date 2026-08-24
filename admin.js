@@ -12,6 +12,14 @@
   // lalu tempel hasilnya (64 karakter) menggantikan ADMIN_HASH di bawah.
   const ADMIN_HASH = '352df6859167c1a00391a23fc6d535ea4561cd560ca263b976f30548528af074';
 
+  // Konfigurasi auto-commit GitHub (dideklarasikan di atas juga,
+  // supaya tidak error saat auto-unlock manggil initAdmin() lebih dulu).
+  const GH_OWNER = 'coba28946-sudo';
+  const GH_REPO = 'web-site-kelas';
+  const GH_BRANCH = 'main';
+  const GH_PATH = 'data.js';
+  const GH_TOKEN_KEY = 'tjkt1_ghToken';
+
   // ================= STATE =================
   // (dideklarasikan di atas supaya tidak error saat auto-unlock
   // memanggil initAdmin() sebelum baris ini sempat dieksekusi)
@@ -478,14 +486,6 @@
   }
 
   // ================= AUTO-COMMIT KE GITHUB =================
-  // Repo tujuan sudah dipatok sesuai website ini. Kalau kamu fork/pindah
-  // repo, ganti 3 nilai di bawah supaya sesuai punya kamu.
-  const GH_OWNER = 'coba28946-sudo';
-  const GH_REPO = 'web-site-kelas';
-  const GH_BRANCH = 'main';
-  const GH_PATH = 'data.js';
-  const GH_TOKEN_KEY = 'tjkt1_ghToken';
-
   function getGhToken() {
     return localStorage.getItem(GH_TOKEN_KEY) || '';
   }
