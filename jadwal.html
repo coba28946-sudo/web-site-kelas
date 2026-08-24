@@ -110,53 +110,7 @@
       <button class="day-tab" data-day="jumat">Jumat</button>
     </div>
 
-    <div class="schedule-wrap fade-up">
-      <!-- SENIN -->
-      <div class="schedule-day active" data-day="senin">
-        <div class="schedule-item"><span class="jam">07.00 - 07.15</span><span class="mapel">Upacara / Literasi Pagi</span></div>
-        <div class="schedule-item"><span class="jam">07.15 - 08.45</span><span class="mapel">Matematika</span></div>
-        <div class="schedule-item"><span class="jam">08.45 - 10.15</span><span class="mapel">Jaringan Dasar</span></div>
-        <div class="schedule-item break"><span class="jam">10.15 - 10.30</span><span class="mapel">Istirahat</span></div>
-        <div class="schedule-item"><span class="jam">10.30 - 12.00</span><span class="mapel">Bahasa Indonesia</span></div>
-        <div class="schedule-item"><span class="jam">12.00 - 12.30</span><span class="mapel">Istirahat & Sholat</span></div>
-        <div class="schedule-item"><span class="jam">12.30 - 14.00</span><span class="mapel">Pemrograman Dasar</span></div>
-      </div>
-      <!-- SELASA -->
-      <div class="schedule-day" data-day="selasa">
-        <div class="schedule-item"><span class="jam">07.00 - 08.30</span><span class="mapel">Bahasa Inggris</span></div>
-        <div class="schedule-item"><span class="jam">08.30 - 10.00</span><span class="mapel">Administrasi Infrastruktur Jaringan</span></div>
-        <div class="schedule-item break"><span class="jam">10.00 - 10.15</span><span class="mapel">Istirahat</span></div>
-        <div class="schedule-item"><span class="jam">10.15 - 11.45</span><span class="mapel">Teknologi Jaringan Kabel & Nirkabel</span></div>
-        <div class="schedule-item"><span class="jam">11.45 - 12.30</span><span class="mapel">Istirahat & Sholat</span></div>
-        <div class="schedule-item"><span class="jam">12.30 - 14.00</span><span class="mapel">PJOK</span></div>
-      </div>
-      <!-- RABU -->
-      <div class="schedule-day" data-day="rabu">
-        <div class="schedule-item"><span class="jam">07.00 - 08.30</span><span class="mapel">Pendidikan Pancasila</span></div>
-        <div class="schedule-item"><span class="jam">08.30 - 10.00</span><span class="mapel">Komputer dan Jaringan Dasar</span></div>
-        <div class="schedule-item break"><span class="jam">10.00 - 10.15</span><span class="mapel">Istirahat</span></div>
-        <div class="schedule-item"><span class="jam">10.15 - 11.45</span><span class="mapel">Sistem Keamanan Jaringan</span></div>
-        <div class="schedule-item"><span class="jam">11.45 - 12.30</span><span class="mapel">Istirahat & Sholat</span></div>
-        <div class="schedule-item"><span class="jam">12.30 - 14.00</span><span class="mapel">Seni Budaya</span></div>
-      </div>
-      <!-- KAMIS -->
-      <div class="schedule-day" data-day="kamis">
-        <div class="schedule-item"><span class="jam">07.00 - 08.30</span><span class="mapel">IPAS</span></div>
-        <div class="schedule-item"><span class="jam">08.30 - 10.00</span><span class="mapel">Teknologi Layanan Jaringan</span></div>
-        <div class="schedule-item break"><span class="jam">10.00 - 10.15</span><span class="mapel">Istirahat</span></div>
-        <div class="schedule-item"><span class="jam">10.15 - 11.45</span><span class="mapel">Praktik Perakitan Komputer</span></div>
-        <div class="schedule-item"><span class="jam">11.45 - 12.30</span><span class="mapel">Istirahat & Sholat</span></div>
-        <div class="schedule-item"><span class="jam">12.30 - 14.00</span><span class="mapel">Proyek Kreatif & Kewirausahaan</span></div>
-      </div>
-      <!-- JUMAT -->
-      <div class="schedule-day" data-day="jumat">
-        <div class="schedule-item"><span class="jam">07.00 - 07.30</span><span class="mapel">Senam Pagi / Kerohanian</span></div>
-        <div class="schedule-item"><span class="jam">07.30 - 09.00</span><span class="mapel">Bimbingan Konseling</span></div>
-        <div class="schedule-item break"><span class="jam">09.00 - 09.15</span><span class="mapel">Istirahat</span></div>
-        <div class="schedule-item"><span class="jam">09.15 - 10.45</span><span class="mapel">Simulasi & Troubleshooting Jaringan</span></div>
-        <div class="schedule-item"><span class="jam">10.45 - 11.30</span><span class="mapel">Sholat Jumat & Istirahat</span></div>
-      </div>
-    </div>
+    <div class="schedule-wrap fade-up" id="jadwalWrap"></div>
 
     <p class="jadwal-note fade-up">📌 Jadwal dapat berubah sewaktu-waktu mengikuti kalender akademik sekolah. Update terakhir menyusul dari wali kelas.</p>
   </div>
@@ -173,6 +127,7 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 
+<script src="js/data.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

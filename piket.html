@@ -110,103 +110,7 @@
       <button class="day-tab" data-day="jumat">Jumat</button>
     </div>
 
-    <div class="piket-wrap fade-up">
-      <!-- SENIN -->
-      <div class="schedule-day active" data-day="senin">
-        <div class="piket-group">
-          <div class="piket-group-title"><span class="tag">Kelompok 1</span> Piket Hari Senin</div>
-          <div class="member-chips">
-            <span class="member-chip">Nama Siswa 1</span>
-            <span class="member-chip">Nama Siswa 2</span>
-            <span class="member-chip">Nama Siswa 3</span>
-            <span class="member-chip">Nama Siswa 4</span>
-            <span class="member-chip">Nama Siswa 5</span>
-            <span class="member-chip">Nama Siswa 6</span>
-          </div>
-          <div class="piket-tasks">
-            <div class="task-item"><span class="check-icon">✓</span> Menyapu dan mengepel lantai kelas</div>
-            <div class="task-item"><span class="check-icon">✓</span> Membuang sampah ke tempat pembuangan</div>
-            <div class="task-item"><span class="check-icon">✓</span> Merapikan meja, kursi, dan papan tulis</div>
-          </div>
-        </div>
-      </div>
-      <!-- SELASA -->
-      <div class="schedule-day" data-day="selasa">
-        <div class="piket-group">
-          <div class="piket-group-title"><span class="tag">Kelompok 2</span> Piket Hari Selasa</div>
-          <div class="member-chips">
-            <span class="member-chip">Nama Siswa 7</span>
-            <span class="member-chip">Nama Siswa 8</span>
-            <span class="member-chip">Nama Siswa 9</span>
-            <span class="member-chip">Nama Siswa 10</span>
-            <span class="member-chip">Nama Siswa 11</span>
-            <span class="member-chip">Nama Siswa 12</span>
-          </div>
-          <div class="piket-tasks">
-            <div class="task-item"><span class="check-icon">✓</span> Menyapu dan mengepel lantai kelas</div>
-            <div class="task-item"><span class="check-icon">✓</span> Membuang sampah ke tempat pembuangan</div>
-            <div class="task-item"><span class="check-icon">✓</span> Menghapus dan membersihkan papan tulis</div>
-          </div>
-        </div>
-      </div>
-      <!-- RABU -->
-      <div class="schedule-day" data-day="rabu">
-        <div class="piket-group">
-          <div class="piket-group-title"><span class="tag">Kelompok 3</span> Piket Hari Rabu</div>
-          <div class="member-chips">
-            <span class="member-chip">Nama Siswa 13</span>
-            <span class="member-chip">Nama Siswa 14</span>
-            <span class="member-chip">Nama Siswa 15</span>
-            <span class="member-chip">Nama Siswa 16</span>
-            <span class="member-chip">Nama Siswa 17</span>
-            <span class="member-chip">Nama Siswa 18</span>
-          </div>
-          <div class="piket-tasks">
-            <div class="task-item"><span class="check-icon">✓</span> Menyapu dan mengepel lantai kelas</div>
-            <div class="task-item"><span class="check-icon">✓</span> Merapikan sudut baca dan rak buku</div>
-            <div class="task-item"><span class="check-icon">✓</span> Menyiram tanaman di depan kelas</div>
-          </div>
-        </div>
-      </div>
-      <!-- KAMIS -->
-      <div class="schedule-day" data-day="kamis">
-        <div class="piket-group">
-          <div class="piket-group-title"><span class="tag">Kelompok 4</span> Piket Hari Kamis</div>
-          <div class="member-chips">
-            <span class="member-chip">Nama Siswa 19</span>
-            <span class="member-chip">Nama Siswa 20</span>
-            <span class="member-chip">Nama Siswa 21</span>
-            <span class="member-chip">Nama Siswa 22</span>
-            <span class="member-chip">Nama Siswa 23</span>
-            <span class="member-chip">Nama Siswa 24</span>
-          </div>
-          <div class="piket-tasks">
-            <div class="task-item"><span class="check-icon">✓</span> Menyapu dan mengepel lantai kelas</div>
-            <div class="task-item"><span class="check-icon">✓</span> Membuang sampah ke tempat pembuangan</div>
-            <div class="task-item"><span class="check-icon">✓</span> Merapikan alat kebersihan kelas</div>
-          </div>
-        </div>
-      </div>
-      <!-- JUMAT -->
-      <div class="schedule-day" data-day="jumat">
-        <div class="piket-group">
-          <div class="piket-group-title"><span class="tag">Kelompok 5</span> Piket Hari Jumat</div>
-          <div class="member-chips">
-            <span class="member-chip">Nama Siswa 25</span>
-            <span class="member-chip">Nama Siswa 26</span>
-            <span class="member-chip">Nama Siswa 27</span>
-            <span class="member-chip">Nama Siswa 28</span>
-            <span class="member-chip">Nama Siswa 29</span>
-            <span class="member-chip">Nama Siswa 30</span>
-          </div>
-          <div class="piket-tasks">
-            <div class="task-item"><span class="check-icon">✓</span> Membersihkan kelas menyeluruh sebelum akhir pekan</div>
-            <div class="task-item"><span class="check-icon">✓</span> Membuang sampah ke tempat pembuangan</div>
-            <div class="task-item"><span class="check-icon">✓</span> Mengunci jendela dan merapikan kelas</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="piket-wrap fade-up" id="piketWrap"></div>
 
     <p class="jadwal-note fade-up">📌 Kelompok yang tidak bertugas hari itu tetap wajib menjaga kebersihan area mejanya masing-masing. Jadwal dapat berubah sesuai kesepakatan wali kelas.</p>
   </div>
@@ -223,6 +127,7 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 
+<script src="js/data.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

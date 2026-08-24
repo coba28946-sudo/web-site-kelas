@@ -117,20 +117,7 @@
 
     <!-- ISI LAPORAN KAS (tampil setelah sandi benar) -->
     <div class="kas-content" id="kasContent">
-      <div class="kas-summary-grid fade-up">
-        <div class="kas-summary-card">
-          <div class="label">Saldo Kas Saat Ini</div>
-          <div class="value">Rp 0</div>
-        </div>
-        <div class="kas-summary-card in">
-          <div class="label">Total Pemasukan</div>
-          <div class="value">Rp 0</div>
-        </div>
-        <div class="kas-summary-card out">
-          <div class="label">Total Pengeluaran</div>
-          <div class="value">Rp 0</div>
-        </div>
-      </div>
+      <div class="kas-summary-grid fade-up" id="kasSummary"></div>
 
       <div class="kas-table-wrap fade-up">
         <table class="kas-table">
@@ -142,17 +129,11 @@
               <th>Jumlah</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td colspan="4" style="text-align:center;color:var(--muted);padding:32px 20px;">
-                Belum ada data transaksi — bendahara kelas dapat menambahkan baris di sini.
-              </td>
-            </tr>
-          </tbody>
+          <tbody id="kasBody"></tbody>
         </table>
       </div>
 
-      <p class="jadwal-note fade-up">📌 Data di atas adalah contoh kosong. Bendahara kelas dapat mengganti isi tabel dan ringkasan di atas dengan data kas yang sebenarnya.</p>
+      <p class="jadwal-note fade-up">📌 Data kas dikelola lewat halaman admin oleh bendahara/pengurus kelas.</p>
     </div>
 
   </div>
@@ -169,6 +150,7 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 
+<script src="js/data.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

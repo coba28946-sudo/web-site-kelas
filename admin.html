@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — X TJKT 1</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script>
+(function(){
+  var t = localStorage.getItem('theme');
+  if (t === 'light') document.documentElement.setAttribute('data-theme','light');
+})();
+</script>
+</head>
+<body>
+
+<div class="admin-wrap">
+
+  <div class="admin-header">
+    <div class="logo-mark">TJ</div>
+    <h1>Admin Panel <span class="gradient-text">X TJKT 1</span></h1>
+    <p>Kelola data Daftar Siswa, Jadwal Pelajaran, Piket, dan Kas dari satu tempat.</p>
+    <a href="index.html" class="admin-back">← Kembali ke website</a>
+  </div>
+
+  <!-- GERBANG SANDI ADMIN -->
+  <div class="kas-lock" id="adminLock">
+    <div class="lock-icon">🔒</div>
+    <h2>Khusus Admin</h2>
+    <p>Halaman ini hanya untuk pengurus kelas yang mengelola data website. Masukkan sandi admin.</p>
+    <form class="kas-form" id="adminForm" autocomplete="off">
+      <input type="password" class="kas-input" id="adminPassword" placeholder="Masukkan sandi admin" required>
+      <button type="submit" class="btn btn-primary" style="justify-content:center;">Masuk →</button>
+      <div class="kas-error" id="adminError"></div>
+    </form>
+  </div>
+
+  <!-- ISI ADMIN PANEL -->
+  <div class="kas-content" id="adminContent">
+
+    <div class="admin-banner">
+      ⚠️ <strong>Penting:</strong> ini website statis (GitHub Pages), tidak ada database di server.
+      Perubahan di panel ini hanya tersimpan di <em>browser kamu sekarang</em>. Setelah selesai edit,
+      klik <strong>"Unduh data.js"</strong>, lalu ganti file <code>js/data.js</code> di repo GitHub kamu
+      dengan file hasil unduhan itu (upload / commit &amp; push) — baru semua orang bisa lihat perubahannya
+      di website.
+    </div>
+
+    <div class="admin-msg" id="adminMsg"></div>
+    <div class="admin-actions">
+      <button class="btn btn-sm btn-outline" id="btnSaveDraft">💾 Simpan Draf di Browser Ini</button>
+      <button class="btn btn-sm btn-outline" id="btnLoadDraft">↩️ Muat Draf Tersimpan</button>
+      <button class="btn btn-sm btn-danger-outline" id="btnReset">🗑️ Reset ke Data Awal</button>
+      <button class="btn btn-sm btn-primary" id="btnDownload">⬇️ Unduh data.js</button>
+    </div>
+
+    <div class="admin-tabs" id="adminTabs">
+      <button class="admin-tab active" data-tab="siswa">🧑‍🤝‍🧑 Daftar Siswa</button>
+      <button class="admin-tab" data-tab="jadwal">🕐 Jadwal Pelajaran</button>
+      <button class="admin-tab" data-tab="piket">🧹 Piket</button>
+      <button class="admin-tab" data-tab="kas">💰 Kas</button>
+    </div>
+
+    <!-- PANEL: SISWA -->
+    <div class="admin-panel active" id="panel-siswa">
+      <div class="admin-panel-head">
+        <h3>Daftar Siswa</h3>
+        <button class="btn btn-sm btn-outline" id="btnAddSiswa">+ Tambah Siswa</button>
+      </div>
+      <div class="admin-panel-scroll">
+        <table class="admin-table">
+          <thead>
+            <tr><th style="width:40px;">No</th><th>Nama</th><th style="width:110px;">No. Absen</th><th style="width:140px;">Jenis Kelamin</th><th style="width:40px;"></th></tr>
+          </thead>
+          <tbody id="adminSiswaBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PANEL: JADWAL -->
+    <div class="admin-panel" id="panel-jadwal">
+      <div class="admin-panel-head">
+        <h3>Jadwal Pelajaran</h3>
+        <button class="btn btn-sm btn-outline" id="btnAddJadwal">+ Tambah Jam Pelajaran</button>
+      </div>
+      <div class="admin-tabs-sm" id="jadwalDayTabs">
+        <button class="admin-tab-sm active" data-day="senin">Senin</button>
+        <button class="admin-tab-sm" data-day="selasa">Selasa</button>
+        <button class="admin-tab-sm" data-day="rabu">Rabu</button>
+        <button class="admin-tab-sm" data-day="kamis">Kamis</button>
+        <button class="admin-tab-sm" data-day="jumat">Jumat</button>
+      </div>
+      <div class="admin-panel-scroll">
+        <table class="admin-table">
+          <thead>
+            <tr><th style="width:150px;">Jam</th><th>Mata Pelajaran</th><th style="width:80px;">Istirahat?</th><th style="width:40px;"></th></tr>
+          </thead>
+          <tbody id="adminJadwalBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PANEL: PIKET -->
+    <div class="admin-panel" id="panel-piket">
+      <div class="admin-panel-head">
+        <h3>Jadwal Piket</h3>
+      </div>
+      <div class="admin-tabs-sm" id="piketDayTabs">
+        <button class="admin-tab-sm active" data-day="senin">Senin</button>
+        <button class="admin-tab-sm" data-day="selasa">Selasa</button>
+        <button class="admin-tab-sm" data-day="rabu">Rabu</button>
+        <button class="admin-tab-sm" data-day="kamis">Kamis</button>
+        <button class="admin-tab-sm" data-day="jumat">Jumat</button>
+      </div>
+
+      <label class="admin-subtitle">Nama Kelompok</label>
+      <input type="text" class="admin-input" id="piketKelompokInput" placeholder="cth: Kelompok 1">
+
+      <div class="admin-panel-head">
+        <p class="admin-subtitle" style="margin:22px 0 0;">Anggota Kelompok</p>
+        <button class="btn btn-sm btn-outline" id="btnAddAnggota">+ Tambah Anggota</button>
+      </div>
+      <div id="adminPiketAnggota"></div>
+
+      <div class="admin-panel-head">
+        <p class="admin-subtitle" style="margin:22px 0 0;">Daftar Tugas</p>
+        <button class="btn btn-sm btn-outline" id="btnAddTugas">+ Tambah Tugas</button>
+      </div>
+      <div id="adminPiketTugas"></div>
+    </div>
+
+    <!-- PANEL: KAS -->
+    <div class="admin-panel" id="panel-kas">
+      <div class="admin-panel-head">
+        <h3>Transparansi Kas</h3>
+        <button class="btn btn-sm btn-outline" id="btnAddKas">+ Tambah Transaksi</button>
+      </div>
+      <div class="kas-summary-grid" id="adminKasSummary" style="margin-bottom:22px;"></div>
+      <div class="admin-panel-scroll">
+        <table class="admin-table">
+          <thead>
+            <tr><th style="width:130px;">Tanggal</th><th>Keterangan</th><th style="width:110px;">Tipe</th><th style="width:130px;">Jumlah (Rp)</th><th style="width:40px;"></th></tr>
+          </thead>
+          <tbody id="adminKasBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
