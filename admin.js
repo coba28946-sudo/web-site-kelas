@@ -12,6 +12,14 @@
   // lalu tempel hasilnya (64 karakter) menggantikan ADMIN_HASH di bawah.
   const ADMIN_HASH = '352df6859167c1a00391a23fc6d535ea4561cd560ca263b976f30548528af074';
 
+  // ================= STATE =================
+  // (dideklarasikan di atas supaya tidak error saat auto-unlock
+  // memanggil initAdmin() sebelum baris ini sempat dieksekusi)
+  let data = null;
+  let jadwalDay = 'senin';
+  let piketDay = 'senin';
+  let initialized = false;
+
   const adminForm = document.getElementById('adminForm');
   const adminInput = document.getElementById('adminPassword');
   const adminError = document.getElementById('adminError');
@@ -54,12 +62,7 @@
     });
   }
 
-  // ================= STATE =================
-  let data = null;
-  let jadwalDay = 'senin';
-  let piketDay = 'senin';
-  let initialized = false;
-
+  // ================= INIT =================
   function initAdmin() {
     if (initialized) return;
     initialized = true;
