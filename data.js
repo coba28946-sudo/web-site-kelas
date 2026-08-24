@@ -5,7 +5,7 @@
 const SITE_DATA = {
   "siswa": [
     {
-      "nama": "aldio ",
+      "nama": "aldio adistya ashari",
       "absen": "01",
       "jk": "Laki-laki"
     },
