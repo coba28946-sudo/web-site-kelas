@@ -536,12 +536,13 @@ const SITE_DATA = {
     "senin": {
       "kelompok": "Kelompok 1",
       "anggota": [
-        "Nama Siswa 1",
-        "Nama Siswa 2",
-        "Nama Siswa 3",
-        "Nama Siswa 4",
-        "Nama Siswa 5",
-        "Nama Siswa 6"
+        "ADLI ALVANNO",
+        "AKBAR SETO NUGROHO",
+        "ALDIO ADISTYA ASHARI",
+        "ALFREDO ELANDA",
+        "ANDIKA CANDRA",
+        "AYU SELVINA",
+        "ESI ERLIANTI"
       ],
       "tugas": [
         "Menyapu dan mengepel lantai kelas",
@@ -552,12 +553,13 @@ const SITE_DATA = {
     "selasa": {
       "kelompok": "Kelompok 2",
       "anggota": [
-        "Nama Siswa 7",
-        "Nama Siswa 8",
-        "Nama Siswa 9",
-        "Nama Siswa 10",
-        "Nama Siswa 11",
-        "Nama Siswa 12"
+        "CHRISTIAN MARVEL KUSNEDI NG",
+        "DHANNY ENZO",
+        "EVAN ARGO EMANUEL HUTAPEA",
+        "FABIANO DURTA",
+        "FADHIL RHAGATAN",
+        "FAUZI PAWAWO",
+        "FINA NAILATUL IZZA"
       ],
       "tugas": [
         "Menyapu dan mengepel lantai kelas",
@@ -568,12 +570,13 @@ const SITE_DATA = {
     "rabu": {
       "kelompok": "Kelompok 3",
       "anggota": [
-        "Nama Siswa 13",
-        "Nama Siswa 14",
-        "Nama Siswa 15",
-        "Nama Siswa 16",
-        "Nama Siswa 17",
-        "Nama Siswa 18"
+        "FATIH ANNAFIS",
+        "GLORIA QUEENZA TABALUYAN",
+        "ILMY IVANDA JURNALIS",
+        "KEVIN SAPUTRA RAHELBI",
+        "KHALID KHAIRI",
+        "LAITS AL FAHMI",
+        "MELVIN MARVELANO ALVIS"
       ],
       "tugas": [
         "Menyapu dan mengepel lantai kelas",
@@ -584,12 +587,13 @@ const SITE_DATA = {
     "kamis": {
       "kelompok": "Kelompok 4",
       "anggota": [
-        "Nama Siswa 19",
-        "Nama Siswa 20",
-        "Nama Siswa 21",
-        "Nama Siswa 22",
-        "Nama Siswa 23",
-        "Nama Siswa 24"
+        "KEZIA AURORA",
+        "MUHAMMAD BAHARUDIN",
+        "MUHAMMAD HAFIZHUSH SHOLAH",
+        "MUHAMMAD RAFA AL FARDAN",
+        "REZI ANANDA PRASETYA",
+        "RYAN ALDIANO",
+        "MARVELL"
       ],
       "tugas": [
         "Menyapu dan mengepel lantai kelas",
@@ -600,12 +604,14 @@ const SITE_DATA = {
     "jumat": {
       "kelompok": "Kelompok 5",
       "anggota": [
-        "Nama Siswa 25",
-        "Nama Siswa 26",
-        "Nama Siswa 27",
-        "Nama Siswa 28",
-        "Nama Siswa 29",
-        "Nama Siswa 30"
+        "HANS JUANDI",
+        "NAZUWA AULIA PUTRI",
+        "RAYHAN RIZKY TD",
+        "SHAFIQ FARRES MUFID",
+        "SYAFIQ ARKANSYAH",
+        "VELICK ANDREAS",
+        "YONANDA ARIYANSAH",
+        "ZIVANA LETISYA AZ ZAHWA"
       ],
       "tugas": [
         "Membersihkan kelas menyeluruh sebelum akhir pekan",
