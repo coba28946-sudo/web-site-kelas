@@ -1,186 +1,187 @@
 // ============================================================
 // SITE_DATA — sumber data tunggal untuk semua halaman website
-// (siswa, jadwal, piket, kas, galeri). Diedit lewat admin.html.
+// (siswa, jadwal, piket, kas). Diedit lewat admin.html.
+// Ganti file js/data.js di repo dengan file ini, lalu commit & push.
 // ============================================================
 const SITE_DATA = {
   "siswa": [
     {
-      "nama": "aldio ",
+      "nama": "Adli Alvanno",
       "absen": "01",
       "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 2",
+      "nama": "Akbar Seto Nugroho",
       "absen": "02",
-      "jk": "Perempuan"
+      "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 3",
+      "nama": "Aldio Adstya",
       "absen": "03",
       "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 4",
+      "nama": "Alfredo Elanda",
       "absen": "04",
-      "jk": "Perempuan"
+      "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 5",
+      "nama": "Andika Candra",
       "absen": "05",
       "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 6",
+      "nama": "Ayu Selvina",
       "absen": "06",
       "jk": "Perempuan"
     },
     {
-      "nama": "Nama Siswa 7",
+      "nama": "Christian Marvel Kusendi NG",
       "absen": "07",
       "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 8",
+      "nama": "Dhanny Enzo",
       "absen": "08",
-      "jk": "Perempuan"
-    },
-    {
-      "nama": "Nama Siswa 9",
-      "absen": "09",
       "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 10",
-      "absen": "10",
+      "nama": "Esi Erlianti",
+      "absen": "09",
       "jk": "Perempuan"
     },
     {
-      "nama": "Nama Siswa 11",
+      "nama": "Evan Argo Emanuel Hutapea",
+      "absen": "10",
+      "jk": "Laki-laki"
+    },
+    {
+      "nama": "Fabiano Durta",
       "absen": "11",
       "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 12",
+      "nama": "Fadhil Raghatan",
       "absen": "12",
-      "jk": "Perempuan"
+      "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 13",
+      "nama": "Fatih Annafis",
       "absen": "13",
       "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 14",
+      "nama": "Fauzi Pawawo",
       "absen": "14",
-      "jk": "Perempuan"
-    },
-    {
-      "nama": "Nama Siswa 15",
-      "absen": "15",
       "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 16",
+      "nama": "Fina Nailatul Izza",
+      "absen": "15",
+      "jk": "Perempuan"
+    },
+    {
+      "nama": "Gloria Queenza ",
       "absen": "16",
       "jk": "Perempuan"
     },
     {
-      "nama": "Nama Siswa 17",
+      "nama": "Hans Juandi",
       "absen": "17",
       "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 18",
+      "nama": "Ilmy Ivanda Jurnalis",
       "absen": "18",
-      "jk": "Perempuan"
+      "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 19",
+      "nama": "Khalid Khairi",
       "absen": "19",
       "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 20",
+      "nama": "Kevin Saputra Rahelbi",
       "absen": "20",
-      "jk": "Perempuan"
-    },
-    {
-      "nama": "Nama Siswa 21",
-      "absen": "21",
       "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 22",
-      "absen": "22",
+      "nama": "Kezia Aurora",
+      "absen": "21",
       "jk": "Perempuan"
     },
     {
-      "nama": "Nama Siswa 23",
+      "nama": "Laits Al Fahmi",
+      "absen": "22",
+      "jk": "Laki-laki"
+    },
+    {
+      "nama": "Marvell",
       "absen": "23",
       "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 24",
+      "nama": "Melvin Marvelano Alvis",
       "absen": "24",
-      "jk": "Perempuan"
+      "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 25",
+      "nama": "Muhammad Baharudin",
       "absen": "25",
       "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 26",
+      "nama": "Muhammad Hafizhush Sholah",
       "absen": "26",
-      "jk": "Perempuan"
+      "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 27",
+      "nama": "Muhammad Rafa Al Fardan",
       "absen": "27",
       "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 28",
+      "nama": "Nazuwa Aulia Putri",
       "absen": "28",
       "jk": "Perempuan"
     },
     {
-      "nama": "Nama Siswa 29",
+      "nama": "Rayhan Rizky TD",
       "absen": "29",
       "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 30",
+      "nama": "Rezi",
       "absen": "30",
-      "jk": "Perempuan"
+      "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 31",
+      "nama": "Ryan Aldiano",
       "absen": "31",
       "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 32",
+      "nama": "Shafiq Farres Mufid",
       "absen": "32",
-      "jk": "Perempuan"
+      "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 33",
+      "nama": "Syafiq Arkansyah",
       "absen": "33",
       "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 34",
+      "nama": "Velick Andreas",
       "absen": "34",
-      "jk": "Perempuan"
+      "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 35",
+      "nama": "Yonanda Ariansah",
       "absen": "35",
       "jk": "Laki-laki"
     },
     {
-      "nama": "Nama Siswa 36",
+      "nama": "Zivana Letisya Az-Zahwa",
       "absen": "36",
       "jk": "Perempuan"
     }
