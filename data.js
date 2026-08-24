@@ -5,7 +5,7 @@
 const SITE_DATA = {
   "siswa": [
     {
-      "nama": "aldio adistya ashari",
+      "nama": "aldio ",
       "absen": "01",
       "jk": "Laki-laki"
     },
@@ -188,176 +188,360 @@ const SITE_DATA = {
   "jadwal": {
     "senin": [
       {
-        "jam": "07.00 - 07.15",
+        "jam": "07.00 - 07.45",
         "mapel": "Upacara / Literasi Pagi",
         "istirahat": false
       },
       {
-        "jam": "07.15 - 08.45",
+        "jam": "07:45 - 08:25",
+        "mapel": "Dasar-dasar Program Keahlian TKJ",
+        "istirahat": false
+      },
+      {
+        "jam": "08:25 - 09:05",
+        "mapel": "Dasar-dasar Program Keahlian TKJ",
+        "istirahat": false
+      },
+      {
+        "jam": "09:05 - 09:45",
+        "mapel": "Dasar-dasar Program Keahlian TKJ",
+        "istirahat": true
+      },
+      {
+        "jam": "09:45 - 10:00",
+        "mapel": "Istirahat 1",
+        "istirahat": false
+      },
+      {
+        "jam": "10:00 -10:40",
+        "mapel": "Bahasa Inggris",
+        "istirahat": true
+      },
+      {
+        "jam": "10:40 - 11:20",
+        "mapel": "Bahasa Inggris",
+        "istirahat": false
+      },
+      {
+        "jam": "11:20 - 12:00",
+        "mapel": "Bimbingan Konseling",
+        "istirahat": false
+      },
+      {
+        "jam": "12:00 - 13:00",
+        "mapel": "Ishoma",
+        "istirahat": false
+      },
+      {
+        "jam": "13:00 - 13:40",
         "mapel": "Matematika",
         "istirahat": false
       },
       {
-        "jam": "08.45 - 10.15",
-        "mapel": "Jaringan Dasar",
+        "jam": "13:40 - 14:20",
+        "mapel": "Matematika",
         "istirahat": false
       },
       {
-        "jam": "10.15 - 10.30",
-        "mapel": "Istirahat",
-        "istirahat": true
-      },
-      {
-        "jam": "10.30 - 12.00",
-        "mapel": "Bahasa Indonesia",
+        "jam": "14:20 - 15:00",
+        "mapel": "Informatika",
         "istirahat": false
       },
       {
-        "jam": "12.00 - 12.30",
-        "mapel": "Istirahat & Sholat",
-        "istirahat": true
-      },
-      {
-        "jam": "12.30 - 14.00",
-        "mapel": "Pemrograman Dasar",
+        "jam": "15:00 - 15:40",
+        "mapel": "Informatika",
         "istirahat": false
       }
     ],
     "selasa": [
       {
-        "jam": "07.00 - 08.30",
-        "mapel": "Bahasa Inggris",
+        "jam": "(07:00-07:15)",
+        "mapel": "Pagi beriman",
         "istirahat": false
       },
       {
-        "jam": "08.30 - 10.00",
-        "mapel": "Administrasi Infrastruktur Jaringan",
+        "jam": "07:15 - 07:45",
+        "mapel": "Pendidikan Jasmani, Olahraga dan Kesehatan",
         "istirahat": false
       },
       {
-        "jam": "10.00 - 10.15",
+        "jam": "07:45 - 08:25",
+        "mapel": "Pendidikan Jasmani, Olahraga dan Kesehatan",
+        "istirahat": true
+      },
+      {
+        "jam": "08:25 - 09:05",
+        "mapel": "Pendidikan Jasmani, Olahraga dan Kesehatan",
+        "istirahat": false
+      },
+      {
+        "jam": "09:05 - 09:45",
+        "mapel": "Pendidikan Agama Islam dan Budi Pekerti",
+        "istirahat": true
+      },
+      {
+        "jam": "09:05 - 09:45",
+        "mapel": "Agama Konghucu",
+        "istirahat": false
+      },
+      {
+        "jam": "09:05 - 09:45",
+        "mapel": "Agama Kristen",
+        "istirahat": false
+      },
+      {
+        "jam": "09:45 - 10:00",
         "mapel": "Istirahat",
-        "istirahat": true
-      },
-      {
-        "jam": "10.15 - 11.45",
-        "mapel": "Teknologi Jaringan Kabel & Nirkabel",
         "istirahat": false
       },
       {
-        "jam": "11.45 - 12.30",
-        "mapel": "Istirahat & Sholat",
-        "istirahat": true
+        "jam": "10:00 - 10:40",
+        "mapel": "Pendidikan Agama Islam dan Budi Pekerti",
+        "istirahat": false
       },
       {
-        "jam": "12.30 - 14.00",
-        "mapel": "PJOK",
+        "jam": "10:00 - 10:40",
+        "mapel": "Agama Konghucu",
+        "istirahat": false
+      },
+      {
+        "jam": "10:00 - 10:40",
+        "mapel": "Agama Kristen",
+        "istirahat": false
+      },
+      {
+        "jam": "10:40 - 11:20",
+        "mapel": "Pendidikan Agama Islam dan Budi Pekerti",
+        "istirahat": false
+      },
+      {
+        "jam": "10:40 - 11:20",
+        "mapel": "Agama Konghucu",
+        "istirahat": false
+      },
+      {
+        "jam": "10:40 - 11:20",
+        "mapel": "Agama Kristen",
+        "istirahat": false
+      },
+      {
+        "jam": "11:20 - 12:00 ",
+        "mapel": "Pendidikan Pancasila dan Kewarganegaraan",
+        "istirahat": false
+      },
+      {
+        "jam": "12:00 - 13:00",
+        "mapel": "Ishoma",
+        "istirahat": false
+      },
+      {
+        "jam": "13:00 - 13:40",
+        "mapel": "Pendidikan Pancasila dan Kewarganegaraan",
+        "istirahat": false
+      },
+      {
+        "jam": "13:40 - 14:20",
+        "mapel": "Dasar-dasar Program Keahlian TKJ",
+        "istirahat": false
+      },
+      {
+        "jam": "14:20 - 15:00",
+        "mapel": "Dasar-dasar Program Keahlian TKJ",
+        "istirahat": false
+      },
+      {
+        "jam": "15:00 - 15:40",
+        "mapel": "Dasar-dasar Program Keahlian TKJ",
         "istirahat": false
       }
     ],
     "rabu": [
       {
-        "jam": "07.00 - 08.30",
-        "mapel": "Pendidikan Pancasila",
+        "jam": "07:00 - 07:15",
+        "mapel": "Pagi Beriman ",
         "istirahat": false
       },
       {
-        "jam": "08.30 - 10.00",
-        "mapel": "Komputer dan Jaringan Dasar",
+        "jam": "07:15 - 07:45",
+        "mapel": "Projek Ilmu Pengetahuan Alam dan Sosial",
         "istirahat": false
       },
       {
-        "jam": "10.00 - 10.15",
+        "jam": "07:45 - 08:25",
+        "mapel": "Projek Ilmu Pengetahuan Alam dan Sosial",
+        "istirahat": true
+      },
+      {
+        "jam": "08:25 - 09:05",
+        "mapel": "Projek Ilmu Pengetahuan Alam dan Sosial",
+        "istirahat": false
+      },
+      {
+        "jam": "09:05 - 09:45",
+        "mapel": "Bahasa Inggris",
+        "istirahat": true
+      },
+      {
+        "jam": "09:45 - 10:00",
         "mapel": "Istirahat",
-        "istirahat": true
-      },
-      {
-        "jam": "10.15 - 11.45",
-        "mapel": "Sistem Keamanan Jaringan",
         "istirahat": false
       },
       {
-        "jam": "11.45 - 12.30",
-        "mapel": "Istirahat & Sholat",
-        "istirahat": true
+        "jam": "10:00 - 10:40",
+        "mapel": "Bahasa Inggris",
+        "istirahat": false
       },
       {
-        "jam": "12.30 - 14.00",
-        "mapel": "Seni Budaya",
+        "jam": "10:40 - 11:20",
+        "mapel": "Bahasa Indonesia",
+        "istirahat": false
+      },
+      {
+        "jam": "11:20 - 12:00",
+        "mapel": "Bahasa Indonesia",
+        "istirahat": false
+      },
+      {
+        "jam": "12:00 - 13:00",
+        "mapel": "Ishoma",
+        "istirahat": false
+      },
+      {
+        "jam": "13:00 - 13:40",
+        "mapel": "Informatika",
+        "istirahat": false
+      },
+      {
+        "jam": "(13:40-14:20)",
+        "mapel": "Informatika",
+        "istirahat": false
+      },
+      {
+        "jam": "(14:20-15:00)",
+        "mapel": "Sejarah",
+        "istirahat": false
+      },
+      {
+        "jam": "15:00 - 15:30",
+        "mapel": "Sejarah",
         "istirahat": false
       }
     ],
     "kamis": [
       {
-        "jam": "07.00 - 08.30",
-        "mapel": "IPAS",
+        "jam": "07:00 - 07:15",
+        "mapel": "Pagi Beriman ",
         "istirahat": false
       },
       {
-        "jam": "08.30 - 10.00",
-        "mapel": "Teknologi Layanan Jaringan",
+        "jam": "07:15 - 07:45",
+        "mapel": "Projek Ilmu Pengetahuan Alam dan Sosial",
         "istirahat": false
       },
       {
-        "jam": "10.00 - 10.15",
+        "jam": "07:45 - 08:25",
+        "mapel": "Projek Ilmu Pengetahuan Alam dan Sosial",
+        "istirahat": true
+      },
+      {
+        "jam": "08:25 - 09:05",
+        "mapel": "Projek Ilmu Pengetahuan Alam dan Sosial",
+        "istirahat": false
+      },
+      {
+        "jam": "09:05 - 09:45",
+        "mapel": "Seni Budaya",
+        "istirahat": true
+      },
+      {
+        "jam": "09:45 - 10:00",
         "mapel": "Istirahat",
-        "istirahat": true
-      },
-      {
-        "jam": "10.15 - 11.45",
-        "mapel": "Praktik Perakitan Komputer",
         "istirahat": false
       },
       {
-        "jam": "11.45 - 12.30",
-        "mapel": "Istirahat & Sholat",
-        "istirahat": true
+        "jam": "10:00 - 10:40",
+        "mapel": "Seni Budaya",
+        "istirahat": false
       },
       {
-        "jam": "12.30 - 14.00",
-        "mapel": "Proyek Kreatif & Kewirausahaan",
+        "jam": "10:40 - 11:20",
+        "mapel": "Dasar-dasar Program Keahlian TKJ",
+        "istirahat": false
+      },
+      {
+        "jam": "11:20 - 12:00",
+        "mapel": "Dasar-dasar Program Keahlian TKJ",
+        "istirahat": false
+      },
+      {
+        "jam": "12:00 - 13:00",
+        "mapel": "Ishoma",
+        "istirahat": false
+      },
+      {
+        "jam": "13:00 - 13:40",
+        "mapel": "Dasar-dasar Program Keahlian TKJ",
+        "istirahat": false
+      },
+      {
+        "jam": "13:40 - 14:20",
+        "mapel": "Matematika",
+        "istirahat": false
+      },
+      {
+        "jam": "14:20 - 15:00",
+        "mapel": "Matematika",
         "istirahat": false
       }
     ],
     "jumat": [
       {
-        "jam": "07.00 - 07.30",
-        "mapel": "Senam Pagi / Kerohanian",
+        "jam": "07:00 - 07:30",
+        "mapel": "Kegiatan Pagi",
         "istirahat": false
       },
       {
-        "jam": "07.30 - 09.00",
-        "mapel": "Bimbingan Konseling",
+        "jam": "07:30 - 08:10",
+        "mapel": "Bahasa Indonesia",
         "istirahat": false
       },
       {
-        "jam": "09.00 - 09.15",
+        "jam": "08:10 - 08:50",
+        "mapel": "Bahasa Indonesia",
+        "istirahat": true
+      },
+      {
+        "jam": "08:50 - 09:05",
         "mapel": "Istirahat",
-        "istirahat": true
-      },
-      {
-        "jam": "09.15 - 10.45",
-        "mapel": "Simulasi & Troubleshooting Jaringan",
         "istirahat": false
       },
       {
-        "jam": "10.45 - 11.30",
-        "mapel": "Sholat Jumat & Istirahat",
+        "jam": "09:05 - 09:45",
+        "mapel": "Dasar-dasar Program Keahlian TKJ",
         "istirahat": true
+      },
+      {
+        "jam": "09:45 - 10:25",
+        "mapel": "Dasar-dasar Program Keahlian TKJ",
+        "istirahat": false
+      },
+      {
+        "jam": "10:25 - 11:05",
+        "mapel": "Dasar-dasar Program Keahlian TKJ",
+        "istirahat": false
       }
     ]
   },
   "piket": {
     "senin": {
-      "kelompok": "kelompok 1 ",
+      "kelompok": "Kelompok 1",
       "anggota": [
-        "ADLI ALVANNO ",
-        "AKBAR SETO NUGROHO",
-        "ALDIO ADISTYA ASHARI",
-        "ALFREDO ELANDA",
-        "ANDIKA CANDRA",
-        "AYU SEVINA ",
-        "ESI ERLIANTI"
+        "Nama Siswa 1",
+        "Nama Siswa 2",
+        "Nama Siswa 3",
+        "Nama Siswa 4",
+        "Nama Siswa 5",
+        "Nama Siswa 6"
       ],
       "tugas": [
         "Menyapu dan mengepel lantai kelas",
