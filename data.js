@@ -135,6 +135,17 @@ const SITE_DATA = {
     }
   },
 
+  galeri: [
+    { label: "Foto Kelas Bersama", icon: "📷", size: "wide-tall", image: "" },
+    { label: "Praktik Jaringan", icon: "🔧", size: "normal", image: "" },
+    { label: "Lab Komputer", icon: "🖥️", size: "normal", image: "" },
+    { label: "Acara Kelas", icon: "🎉", size: "tall", image: "" },
+    { label: "Instalasi Perangkat", icon: "📡", size: "normal", image: "" },
+    { label: "Lomba & Prestasi", icon: "🏆", size: "wide", image: "" },
+    { label: "Kegiatan Sosial", icon: "🤝", size: "normal", image: "" },
+    { label: "Kegiatan Belajar", icon: "📚", size: "normal", image: "" }
+  ],
+
   kas: {
     // tipe: "masuk" atau "keluar", jumlah dalam angka (tanpa titik/koma)
     transaksi: [

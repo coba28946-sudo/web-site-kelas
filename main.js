@@ -319,11 +319,32 @@ function renderKasFromData() {
   }
 }
 
+function renderGaleriFromData() {
+  const wrap = document.getElementById('galeriGrid');
+  if (!wrap || typeof SITE_DATA === 'undefined') return;
+  const items = SITE_DATA.galeri || [];
+  wrap.innerHTML = items.map(it => {
+    const sizeClass =
+      it.size === 'wide' ? ' wide' :
+      it.size === 'tall' ? ' tall' :
+      it.size === 'wide-tall' ? ' wide tall' : '';
+    const bgStyle = it.image ? ` style="background-image:url('${it.image}');background-size:cover;background-position:center;"` : '';
+    const placeholder = it.image ? '' : `
+        <div class="galeri-placeholder"><span class="icon">${it.icon || '📷'}</span><span class="label">${it.label || ''}</span></div>`;
+    return `
+      <div class="galeri-item${sizeClass} fade-up"${bgStyle}>${placeholder}
+        <div class="galeri-overlay"><span>${it.label || ''}</span></div>
+      </div>`;
+  }).join('') || `<p style="color:var(--muted);">Belum ada foto di galeri.</p>`;
+  wrap.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+}
+
 if (typeof SITE_DATA !== 'undefined') {
   renderSiswaFromData();
   renderJadwalFromData();
   renderPiketFromData();
   renderKasFromData();
+  renderGaleriFromData();
 }
 
 // ===== JADWAL PELAJARAN (day tabs) =====

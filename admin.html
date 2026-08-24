@@ -62,6 +62,7 @@
       <button class="admin-tab" data-tab="jadwal">🕐 Jadwal Pelajaran</button>
       <button class="admin-tab" data-tab="piket">🧹 Piket</button>
       <button class="admin-tab" data-tab="kas">💰 Kas</button>
+      <button class="admin-tab" data-tab="galeri">🖼️ Galeri</button>
     </div>
 
     <!-- PANEL: SISWA -->
@@ -147,6 +148,18 @@
           <tbody id="adminKasBody"></tbody>
         </table>
       </div>
+    </div>
+
+    <!-- PANEL: GALERI -->
+    <div class="admin-panel" id="panel-galeri">
+      <div class="admin-panel-head">
+        <h3>Galeri Foto</h3>
+        <button class="btn btn-sm btn-outline" id="btnAddGaleri">+ Tambah Foto</button>
+      </div>
+      <p style="color:var(--muted);font-size:.82rem;margin-bottom:18px;">
+        Foto otomatis dikompres di browser sebelum disimpan. Kalau belum ada foto diunggah, item akan tampil dengan ikon placeholder.
+      </p>
+      <div id="adminGaleriList"></div>
     </div>
 
   </div>

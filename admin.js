@@ -70,15 +70,20 @@
     setupJadwalHandlers();
     setupPiketHandlers();
     setupKasHandlers();
+    setupGaleriHandlers();
     renderAll();
   }
 
   function loadDraftOrDefault() {
+    let d;
     try {
       const draft = localStorage.getItem('tjkt1_siteDataDraft');
-      if (draft) return JSON.parse(draft);
-    } catch (e) { /* ignore corrupt draft */ }
-    return JSON.parse(JSON.stringify(SITE_DATA));
+      d = draft ? JSON.parse(draft) : JSON.parse(JSON.stringify(SITE_DATA));
+    } catch (e) {
+      d = JSON.parse(JSON.stringify(SITE_DATA));
+    }
+    if (!d.galeri) d.galeri = [];
+    return d;
   }
 
   function renderAll() {
@@ -86,6 +91,7 @@
     renderJadwalAdmin();
     renderPiketAdmin();
     renderKasAdmin();
+    renderGaleriAdmin();
   }
 
   function formatRp(n) { return 'Rp ' + (Number(n) || 0).toLocaleString('id-ID'); }
@@ -107,7 +113,7 @@
 
   // ================= TOP ACTIONS =================
   function setupMainTabs() {
-    const TAB_IDS = ['siswa', 'jadwal', 'piket', 'kas'];
+    const TAB_IDS = ['siswa', 'jadwal', 'piket', 'kas', 'galeri'];
     document.querySelectorAll('.admin-tab').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.admin-tab').forEach(b => b.classList.toggle('active', b === btn));
@@ -362,6 +368,108 @@
     document.getElementById('btnAddKas').addEventListener('click', () => {
       data.kas.transaksi.push({ tanggal: '', keterangan: '', tipe: 'masuk', jumlah: 0 });
       renderKasAdmin();
+    });
+  }
+
+  // ================= GALERI =================
+  // Gambar dikompres di browser (resize + JPEG) lalu disimpan sebagai
+  // base64 langsung di dalam data.js, supaya tetap 1 file tanpa server.
+  function compressImage(file, maxDim = 1400, quality = 0.82) {
+    return new Promise((resolve, reject) => {
+      if (!file.type.startsWith('image/')) { reject(new Error('Bukan file gambar')); return; }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) { height = Math.round(height * maxDim / width); width = maxDim; }
+            else { width = Math.round(width * maxDim / height); height = maxDim; }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width; canvas.height = height;
+          canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = () => reject(new Error('Gagal membaca gambar'));
+        img.src = e.target.result;
+      };
+      reader.onerror = () => reject(new Error('Gagal membaca file'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderGaleriAdmin() {
+    const wrap = document.getElementById('adminGaleriList');
+    if (!wrap) return;
+    if (!data.galeri) data.galeri = [];
+
+    wrap.innerHTML = data.galeri.map((g, i) => `
+      <div class="galeri-admin-item">
+        <div class="galeri-admin-thumb"${g.image ? ` style="background-image:url('${g.image}')"` : ''}>${g.image ? '' : (g.icon || '📷')}</div>
+        <div class="galeri-admin-fields">
+          <div class="galeri-admin-row">
+            <input type="text" class="admin-input" data-field="label" data-idx="${i}" value="${escAttr(g.label)}" placeholder="Judul foto" style="max-width:260px;">
+            <select class="admin-input admin-input-sm" data-field="size" data-idx="${i}" style="max-width:150px;">
+              <option value="normal"${(!g.size || g.size === 'normal') ? ' selected' : ''}>Ukuran normal</option>
+              <option value="wide"${g.size === 'wide' ? ' selected' : ''}>Lebar</option>
+              <option value="tall"${g.size === 'tall' ? ' selected' : ''}>Tinggi</option>
+              <option value="wide-tall"${g.size === 'wide-tall' ? ' selected' : ''}>Lebar &amp; Tinggi</option>
+            </select>
+          </div>
+          <div class="galeri-admin-row">
+            <input type="file" accept="image/*" class="galeri-admin-file" data-action="upload-galeri" data-idx="${i}">
+            ${g.image ? `<button type="button" class="btn btn-sm btn-outline" data-action="remove-image" data-idx="${i}">Hapus Foto</button>` : ''}
+            <button type="button" class="btn-icon-danger" data-action="del-galeri" data-idx="${i}" title="Hapus item galeri">✕</button>
+          </div>
+        </div>
+      </div>`).join('') || `<p style="color:var(--muted);font-size:.85rem;">Belum ada item galeri. Klik "+ Tambah Foto".</p>`;
+
+    wrap.querySelectorAll('input[data-field], select[data-field]').forEach(el => {
+      el.addEventListener('input', () => {
+        const idx = Number(el.dataset.idx);
+        data.galeri[idx][el.dataset.field] = el.value;
+      });
+    });
+
+    wrap.querySelectorAll('[data-action="upload-galeri"]').forEach(el => {
+      el.addEventListener('change', async () => {
+        const idx = Number(el.dataset.idx);
+        const file = el.files && el.files[0];
+        if (!file) return;
+        flashMsg('Memproses gambar...');
+        try {
+          const base64 = await compressImage(file);
+          data.galeri[idx].image = base64;
+          renderGaleriAdmin();
+          flashMsg('Foto berhasil diunggah. Jangan lupa unduh data.js setelah selesai.');
+        } catch (err) {
+          flashMsg('Gagal memproses gambar, coba file lain.');
+        }
+      });
+    });
+
+    wrap.querySelectorAll('[data-action="remove-image"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        data.galeri[Number(btn.dataset.idx)].image = '';
+        renderGaleriAdmin();
+      });
+    });
+
+    wrap.querySelectorAll('[data-action="del-galeri"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!confirm('Hapus foto ini dari galeri?')) return;
+        data.galeri.splice(Number(btn.dataset.idx), 1);
+        renderGaleriAdmin();
+      });
+    });
+  }
+
+  function setupGaleriHandlers() {
+    document.getElementById('btnAddGaleri').addEventListener('click', () => {
+      if (!data.galeri) data.galeri = [];
+      data.galeri.push({ label: 'Foto Baru', icon: '📷', size: 'normal', image: '' });
+      renderGaleriAdmin();
     });
   }
 })();
