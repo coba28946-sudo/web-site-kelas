@@ -74,6 +74,7 @@
     setupPiketHandlers();
     setupKasHandlers();
     setupGaleriHandlers();
+    setupGithubSettings();
     renderAll();
   }
 
@@ -474,5 +475,125 @@
       data.galeri.push({ label: 'Foto Baru', icon: '📷', size: 'normal', image: '' });
       renderGaleriAdmin();
     });
+  }
+
+  // ================= AUTO-COMMIT KE GITHUB =================
+  // Repo tujuan sudah dipatok sesuai website ini. Kalau kamu fork/pindah
+  // repo, ganti 3 nilai di bawah supaya sesuai punya kamu.
+  const GH_OWNER = 'coba28946-sudo';
+  const GH_REPO = 'web-site-kelas';
+  const GH_BRANCH = 'main';
+  const GH_PATH = 'data.js';
+  const GH_TOKEN_KEY = 'tjkt1_ghToken';
+
+  function getGhToken() {
+    return localStorage.getItem(GH_TOKEN_KEY) || '';
+  }
+
+  function utf8ToBase64(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+
+  function buildDataJsContent() {
+    const json = JSON.stringify(data, null, 2);
+    return '// ============================================================\n' +
+      '// SITE_DATA — sumber data tunggal untuk semua halaman website\n' +
+      '// (siswa, jadwal, piket, kas, galeri). Diedit lewat admin.html.\n' +
+      '// ============================================================\n' +
+      'const SITE_DATA = ' + json + ';\n';
+  }
+
+  async function saveToGithub() {
+    const token = getGhToken();
+    if (!token) {
+      flashMsg('Belum ada token GitHub. Isi dulu di bagian "Pengaturan GitHub" di bawah.');
+      return;
+    }
+    const btn = document.getElementById('btnAutoCommit');
+    const originalLabel = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Menyimpan ke GitHub...'; }
+
+    try {
+      const apiUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`;
+
+      // 1. Ambil SHA file saat ini (wajib buat update lewat GitHub API)
+      const getRes = await fetch(`${apiUrl}?ref=${GH_BRANCH}`, {
+        headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' }
+      });
+      if (!getRes.ok) {
+        if (getRes.status === 401) throw new Error('Token salah atau sudah kadaluarsa.');
+        if (getRes.status === 404) throw new Error('File data.js tidak ditemukan di repo/branch itu.');
+        throw new Error('Gagal membaca data repo (status ' + getRes.status + ').');
+      }
+      const fileInfo = await getRes.json();
+
+      // 2. Timpa file dengan isi data terbaru
+      const putRes = await fetch(apiUrl, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: 'Update data.js lewat admin panel — ' + new Date().toLocaleString('id-ID'),
+          content: utf8ToBase64(buildDataJsContent()),
+          sha: fileInfo.sha,
+          branch: GH_BRANCH
+        })
+      });
+      if (!putRes.ok) {
+        const errBody = await putRes.json().catch(() => ({}));
+        if (putRes.status === 401) throw new Error('Token salah, kadaluarsa, atau tidak punya izin tulis ke repo.');
+        if (putRes.status === 409) throw new Error('Ada perubahan lain barusan di repo, coba klik simpan sekali lagi.');
+        if (putRes.status === 422 && /too large|size/i.test(errBody.message || '')) {
+          throw new Error('Ukuran data.js kelewat besar (mungkin kebanyakan foto galeri). Kompres/kurangi foto lalu coba lagi.');
+        }
+        throw new Error(errBody.message || ('Gagal menyimpan (status ' + putRes.status + ').'));
+      }
+
+      flashMsg('✅ Tersimpan ke GitHub! Tunggu 1-2 menit lalu refresh website.');
+    } catch (err) {
+      flashMsg('❌ Gagal: ' + err.message);
+      alert('Gagal auto-simpan ke GitHub:\n\n' + err.message);
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = originalLabel; }
+    }
+  }
+
+  function setupGithubSettings() {
+    const tokenInput = document.getElementById('ghTokenInput');
+    const saveTokenBtn = document.getElementById('btnSaveToken');
+    const clearTokenBtn = document.getElementById('btnClearToken');
+    const statusEl = document.getElementById('ghTokenStatus');
+    const autoBtn = document.getElementById('btnAutoCommit');
+
+    function refreshStatus() {
+      if (!statusEl) return;
+      statusEl.textContent = getGhToken()
+        ? '✅ Token tersimpan di browser ini — tombol "Simpan Otomatis" siap dipakai.'
+        : '⚠️ Belum ada token tersimpan. Tombol "Simpan Otomatis" belum bisa dipakai.';
+    }
+    refreshStatus();
+
+    if (saveTokenBtn) {
+      saveTokenBtn.addEventListener('click', () => {
+        const val = tokenInput.value.trim();
+        if (!val) { flashMsg('Isi token dulu sebelum disimpan.'); return; }
+        localStorage.setItem(GH_TOKEN_KEY, val);
+        tokenInput.value = '';
+        refreshStatus();
+        flashMsg('Token disimpan di browser ini.');
+      });
+    }
+    if (clearTokenBtn) {
+      clearTokenBtn.addEventListener('click', () => {
+        if (!confirm('Hapus token GitHub yang tersimpan di browser ini?')) return;
+        localStorage.removeItem(GH_TOKEN_KEY);
+        refreshStatus();
+        flashMsg('Token dihapus.');
+      });
+    }
+    if (autoBtn) autoBtn.addEventListener('click', saveToGithub);
   }
 })();

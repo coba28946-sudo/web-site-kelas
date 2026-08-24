@@ -51,10 +51,33 @@
 
     <div class="admin-msg" id="adminMsg"></div>
     <div class="admin-actions">
+      <button class="btn btn-sm btn-primary" id="btnAutoCommit">🚀 Simpan Otomatis ke GitHub</button>
       <button class="btn btn-sm btn-outline" id="btnSaveDraft">💾 Simpan Draf di Browser Ini</button>
       <button class="btn btn-sm btn-outline" id="btnLoadDraft">↩️ Muat Draf Tersimpan</button>
       <button class="btn btn-sm btn-danger-outline" id="btnReset">🗑️ Reset ke Data Awal</button>
-      <button class="btn btn-sm btn-primary" id="btnDownload">⬇️ Unduh data.js</button>
+      <button class="btn btn-sm btn-outline" id="btnDownload">⬇️ Unduh data.js (Manual)</button>
+    </div>
+
+    <div class="admin-github-settings" id="ghSettings">
+      <div class="admin-panel-head">
+        <h3>⚙️ Pengaturan GitHub (buat Auto-Simpan)</h3>
+      </div>
+      <p style="color:var(--muted);font-size:.82rem;margin-bottom:14px;line-height:1.6;">
+        Supaya tombol <strong>"Simpan Otomatis ke GitHub"</strong> bisa langsung update <code>data.js</code> di repo,
+        kamu perlu bikin <strong>GitHub Personal Access Token</strong> sekali, lalu tempel di sini.
+        Token cuma tersimpan <em>di browser ini</em> (tidak dikirim ke server manapun selain langsung ke GitHub).
+      </p>
+      <div class="admin-github-warn">
+        ⚠️ Token ini setara kata sandi ke repo GitHub kamu. Jangan pakai di komputer/HP bersama/umum,
+        dan jangan share ke siapapun. Sebaiknya buat token dengan akses terbatas — cuma ke repo ini,
+        cuma izin "Contents: Read and write", dan kasih masa berlaku (expiry) misalnya 90 hari.
+      </div>
+      <div class="admin-github-row">
+        <input type="password" class="admin-input" id="ghTokenInput" placeholder="Tempel token di sini (ghp_... atau github_pat_...)" style="flex:1;min-width:240px;">
+        <button class="btn btn-sm btn-outline" id="btnSaveToken">Simpan Token</button>
+        <button class="btn btn-sm btn-danger-outline" id="btnClearToken">Hapus Token</button>
+      </div>
+      <p class="admin-github-status" id="ghTokenStatus"></p>
     </div>
 
     <div class="admin-tabs" id="adminTabs">
