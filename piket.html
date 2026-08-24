@@ -4,17 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>X TJKT 1 // Jadwal Piket</title>
+<meta name="google-site-verification" content="FwWOIk8xcN4-DzOwo8FKddP4YI13DFKfbAYfej8skSc" />
 <meta property="og:type" content="website">
 <meta property="og:title" content="X TJKT 1 // Jadwal Piket">
-<meta property="og:description" content="Jadwal piket kebersihan kelas X TJKT 1, Senin hingga Jumat.">
+<meta property="og:description" content="Jadwal piket kebersihan Kelas X TJKT 1 — Teknik Jaringan Komputer dan Telekomunikasi, tiap hari Senin sampai Jumat.">
 <meta property="og:image" content="https://coba28946-sudo.github.io/web-site-kelas/assets/og-image.png">
 <meta property="og:url" content="https://coba28946-sudo.github.io/web-site-kelas/piket.html">
 <meta property="og:locale" content="id_ID">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="X TJKT 1 // Jadwal Piket">
-<meta name="twitter:description" content="Jadwal piket kebersihan kelas X TJKT 1, Senin hingga Jumat.">
+<meta name="twitter:description" content="Jadwal piket kebersihan Kelas X TJKT 1 — Teknik Jaringan Komputer dan Telekomunikasi, tiap hari Senin sampai Jumat.">
 <meta name="twitter:image" content="https://coba28946-sudo.github.io/web-site-kelas/assets/og-image.png">
-<meta name="description" content="Jadwal piket kebersihan kelas X TJKT 1, Senin hingga Jumat.">
+<meta name="description" content="Jadwal piket kebersihan Kelas X TJKT 1 — Teknik Jaringan Komputer dan Telekomunikasi, tiap hari Senin sampai Jumat.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
@@ -24,6 +25,15 @@
   if (t === 'light') document.documentElement.setAttribute('data-theme','light');
 })();
 </script>
+<style>
+  .piket-section{padding:60px 0 100px}
+  .piket-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:24px}
+  .piket-card{border:1px solid rgba(128,128,128,.15);border-radius:16px;padding:24px}
+  .piket-card h3{font-family:'Space Grotesk',sans-serif;font-size:1.15rem;margin-bottom:4px}
+  .piket-card .jumlah{opacity:.55;font-size:.8rem;margin-bottom:16px;display:block}
+  .piket-card ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+  .piket-card li{font-size:.92rem;padding:6px 10px;border-radius:8px;background:rgba(128,128,128,.06)}
+</style>
 </head>
 <body>
 
@@ -66,53 +76,92 @@
   <a href="kas.html">Kas</a>
 </div>
 
-<header class="page-head struktur">
+<section class="hero" style="min-height:auto;padding:140px 0 40px">
   <div class="hero-bg-grid"></div>
-  <div class="network-decor" aria-hidden="true">
-    <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="netGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#22d3ee"/>
-          <stop offset="100%" stop-color="#8b5cf6"/>
-        </linearGradient>
-      </defs>
-      <line class="n-line" x1="40" y1="60" x2="220" y2="140"/>
-      <line class="n-line slow" x1="220" y1="140" x2="180" y2="300"/>
-      <line class="n-line" x1="220" y1="140" x2="360" y2="90"/>
-      <line class="n-line slow" x1="180" y1="300" x2="340" y2="330"/>
-      <line class="n-line" x1="360" y1="90" x2="340" y2="330"/>
-      <line class="n-line slow" x1="40" y1="60" x2="180" y2="300"/>
-      <circle class="n-dot" cx="40" cy="60" r="4"/>
-      <circle class="n-dot" cx="220" cy="140" r="5"/>
-      <circle class="n-dot" cx="360" cy="90" r="4"/>
-      <circle class="n-dot" cx="180" cy="300" r="4"/>
-      <circle class="n-dot" cx="340" cy="330" r="5"/>
-    </svg>
-  </div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
   <div class="container">
     <div class="eyebrow">Kebersihan Kelas</div>
     <h1>Jadwal <span class="gradient-text">Piket</span></h1>
-    <p>Jadwal piket kebersihan kelas X TJKT 1, Senin sampai Jumat. Pilih hari untuk melihat kelompok yang bertugas.</p>
-    <div class="head-badges">
-      <span class="head-badge">🧹 5 Kelompok Piket</span>
-      <span class="head-badge">🔄 Bergilir Tiap Hari</span>
-    </div>
+    <p class="lead">Kelompok piket kebersihan Kelas X TKJT 1, terbagi tiap hari Senin sampai Jumat.</p>
   </div>
-</header>
+</section>
 
-<section id="piket">
+<section class="piket-section">
   <div class="container">
-    <div class="day-tabs fade-up" id="dayTabs">
-      <button class="day-tab active" data-day="senin">Senin</button>
-      <button class="day-tab" data-day="selasa">Selasa</button>
-      <button class="day-tab" data-day="rabu">Rabu</button>
-      <button class="day-tab" data-day="kamis">Kamis</button>
-      <button class="day-tab" data-day="jumat">Jumat</button>
+    <div class="piket-grid">
+
+      <div class="piket-card fade-up">
+        <h3>Senin</h3>
+        <span class="jumlah">7 siswa</span>
+        <ul>
+          <li>Adli Alvanno</li>
+          <li>Akbar Seto Nugroho</li>
+          <li>Aldio Adistya Ashari</li>
+          <li>Alfredo Elanda</li>
+          <li>Andika Candra</li>
+          <li>Ayu Selvina</li>
+          <li>Esi Erlianti</li>
+        </ul>
+      </div>
+
+      <div class="piket-card fade-up">
+        <h3>Selasa</h3>
+        <span class="jumlah">7 siswa</span>
+        <ul>
+          <li>Christian Marvel Kusnedi NG</li>
+          <li>Dhanny Enzo</li>
+          <li>Evan Argo Emanuel Hutapea</li>
+          <li>Fabiano Durta</li>
+          <li>Fadhil Rhagatan</li>
+          <li>Fauzi Pawawo</li>
+          <li>Fina Nailatul Izza</li>
+        </ul>
+      </div>
+
+      <div class="piket-card fade-up">
+        <h3>Rabu</h3>
+        <span class="jumlah">7 siswa</span>
+        <ul>
+          <li>Fatih Annafis</li>
+          <li>Gloria Queenza Tabaluyan</li>
+          <li>Ilmy Ivanda Jurnalis</li>
+          <li>Kevin Saputra Rahelbi</li>
+          <li>Khalid Khairi</li>
+          <li>Laits Al Fahmi</li>
+          <li>Melvin Marvelano Alvis</li>
+        </ul>
+      </div>
+
+      <div class="piket-card fade-up">
+        <h3>Kamis</h3>
+        <span class="jumlah">7 siswa</span>
+        <ul>
+          <li>Kezia Aurora</li>
+          <li>Muhammad Baharudin</li>
+          <li>Muhammad Hafizhush Sholah</li>
+          <li>Muhammad Rafa Al Fardan</li>
+          <li>Rezi Ananda Prasetya</li>
+          <li>Ryan Aldiano Marvell</li>
+        </ul>
+      </div>
+
+      <div class="piket-card fade-up">
+        <h3>Jumat</h3>
+        <span class="jumlah">8 siswa</span>
+        <ul>
+          <li>Hans Juandi</li>
+          <li>Nazuwa Aulia Putri</li>
+          <li>Rayhan Rizky TD</li>
+          <li>Shafiq Farres Mufid</li>
+          <li>Syafiq Arkansyah</li>
+          <li>Velick Andreas</li>
+          <li>Yonanda Ariyansah</li>
+          <li>Zivana Letisya Az Zahwa</li>
+        </ul>
+      </div>
+
     </div>
-
-    <div class="piket-wrap fade-up" id="piketWrap"></div>
-
-    <p class="jadwal-note fade-up">📌 Kelompok yang tidak bertugas hari itu tetap wajib menjaga kebersihan area mejanya masing-masing. Jadwal dapat berubah sesuai kesepakatan wali kelas.</p>
   </div>
 </section>
 
@@ -127,7 +176,6 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 
-<script src="data.js"></script>
 <script src="main.js"></script>
 </body>
 </html>
