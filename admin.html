@@ -58,7 +58,9 @@
       <button class="btn btn-sm btn-outline" id="btnDownload">⬇️ Unduh data.js (Manual)</button>
     </div>
 
-    <div class="admin-github-settings" id="ghSettings">
+    <button type="button" class="admin-github-toggle" id="btnToggleGhSettings">⚙️ Pengaturan GitHub (buat Auto-Simpan) ▾</button>
+
+    <div class="admin-github-settings" id="ghSettings" style="display:none;">
       <div class="admin-panel-head">
         <h3>⚙️ Pengaturan GitHub (buat Auto-Simpan)</h3>
       </div>
@@ -73,7 +75,10 @@
         cuma izin "Contents: Read and write", dan kasih masa berlaku (expiry) misalnya 90 hari.
       </div>
       <div class="admin-github-row">
-        <input type="password" class="admin-input" id="ghTokenInput" placeholder="Tempel token di sini (ghp_... atau github_pat_...)" style="flex:1;min-width:240px;">
+        <div class="admin-token-wrap">
+          <input type="password" class="admin-input" id="ghTokenInput" placeholder="Tempel token di sini (ghp_... atau github_pat_...)">
+          <button type="button" class="admin-token-eye" id="btnToggleToken" title="Lihat/sembunyikan token">👁️</button>
+        </div>
         <button class="btn btn-sm btn-outline" id="btnSaveToken">Simpan Token</button>
         <button class="btn btn-sm btn-danger-outline" id="btnClearToken">Hapus Token</button>
       </div>

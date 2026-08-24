@@ -567,6 +567,17 @@
     const clearTokenBtn = document.getElementById('btnClearToken');
     const statusEl = document.getElementById('ghTokenStatus');
     const autoBtn = document.getElementById('btnAutoCommit');
+    const toggleBtn = document.getElementById('btnToggleGhSettings');
+    const panel = document.getElementById('ghSettings');
+
+    if (toggleBtn && panel) {
+      toggleBtn.addEventListener('click', () => {
+        const isOpen = panel.style.display !== 'none';
+        panel.style.display = isOpen ? 'none' : 'block';
+        toggleBtn.classList.toggle('open', !isOpen);
+        toggleBtn.textContent = '⚙️ Pengaturan GitHub (buat Auto-Simpan) ' + (isOpen ? '▾' : '▴');
+      });
+    }
 
     function refreshStatus() {
       if (!statusEl) return;
@@ -584,6 +595,7 @@
         tokenInput.value = '';
         refreshStatus();
         flashMsg('Token disimpan di browser ini.');
+        alert('✅ Token berhasil disimpan!\n\nTombol "Simpan Otomatis ke GitHub" sekarang sudah bisa dipakai di browser ini.');
       });
     }
     if (clearTokenBtn) {
