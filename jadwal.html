@@ -4,43 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>X TJKT 1 // Jadwal Pelajaran</title>
-<meta name="google-site-verification" content="FwWOIk8xcN4-DzOwo8FKddP4YI13DFKfbAYfej8skSc" />
 <meta property="og:type" content="website">
 <meta property="og:title" content="X TJKT 1 // Jadwal Pelajaran">
-<meta property="og:description" content="Jadwal pelajaran harian Kelas X TJKT 1 — Teknik Jaringan Komputer dan Telekomunikasi, semester ganjil 2026/2027.">
+<meta property="og:description" content="Jadwal pelajaran harian kelas X TJKT 1, Senin hingga Jumat.">
 <meta property="og:image" content="https://coba28946-sudo.github.io/web-site-kelas/assets/og-image.png">
 <meta property="og:url" content="https://coba28946-sudo.github.io/web-site-kelas/jadwal.html">
 <meta property="og:locale" content="id_ID">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="X TJKT 1 // Jadwal Pelajaran">
-<meta name="twitter:description" content="Jadwal pelajaran harian Kelas X TJKT 1 — Teknik Jaringan Komputer dan Telekomunikasi, semester ganjil 2026/2027.">
+<meta name="twitter:description" content="Jadwal pelajaran harian kelas X TJKT 1, Senin hingga Jumat.">
 <meta name="twitter:image" content="https://coba28946-sudo.github.io/web-site-kelas/assets/og-image.png">
-<meta name="description" content="Jadwal pelajaran harian Kelas X TJKT 1 — Teknik Jaringan Komputer dan Telekomunikasi, semester ganjil 2026/2027.">
+<meta name="description" content="Jadwal pelajaran harian kelas X TJKT 1, Senin hingga Jumat.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="css/style.css">
 <script>
 (function(){
   var t = localStorage.getItem('theme');
   if (t === 'light') document.documentElement.setAttribute('data-theme','light');
 })();
 </script>
-<style>
-  .jadwal-section{padding:60px 0 100px}
-  .jadwal-day{margin-bottom:40px}
-  .jadwal-day h3{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;margin-bottom:6px}
-  .jadwal-day .tanggal{opacity:.6;font-size:.85rem;margin-bottom:16px;display:block}
-  .jadwal-table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:12px}
-  .jadwal-table th,.jadwal-table td{padding:12px 16px;text-align:left;border-bottom:1px solid rgba(255,255,255,.12);font-size:.92rem}
-  .jadwal-table th{font-family:'Space Grotesk',sans-serif;font-weight:600;opacity:.7;font-size:.8rem;text-transform:uppercase;letter-spacing:.03em;background:rgba(255,255,255,.04)}
-  .jadwal-table td.jam{white-space:nowrap;font-family:'Space Grotesk',sans-serif;opacity:.75}
-  .jadwal-table tr.istirahat td{opacity:.5;font-style:italic}
-  .jadwal-table .guru{opacity:.6;font-size:.8rem}
-  .jadwal-wrap{overflow-x:auto;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:rgba(255,255,255,.02)}
-  [data-theme="light"] .jadwal-table th,[data-theme="light"] .jadwal-table td{border-color:rgba(0,0,0,.1)}
-  [data-theme="light"] .jadwal-table th{background:rgba(0,0,0,.03)}
-  [data-theme="light"] .jadwal-wrap{border-color:rgba(0,0,0,.15);background:rgba(0,0,0,.01)}
-</style>
 </head>
 <body>
 
@@ -59,8 +42,8 @@
       <a href="galeri.html">Galeri</a>
       <a href="siswa.html">Daftar Siswa</a>
       <a href="jadwal.html" class="active">Jadwal</a>
-      <a href="piket.html">Piket</a>
-      <a href="kas.html">Kas</a>
+    <a href="piket.html">Piket</a>
+    <a href="kas.html">Kas</a>
     </div>
     <div class="nav-actions">
       <button class="theme-toggle" id="themeToggle" aria-label="Ganti tema terang/gelap">
@@ -79,145 +62,57 @@
   <a href="galeri.html">Galeri</a>
   <a href="siswa.html">Daftar Siswa</a>
   <a href="jadwal.html" class="active">Jadwal</a>
-  <a href="piket.html">Piket</a>
-  <a href="kas.html">Kas</a>
+<a href="piket.html">Piket</a>
+<a href="kas.html">Kas</a>
 </div>
 
-<section class="hero" style="min-height:auto;padding:140px 0 40px">
+<header class="page-head struktur">
   <div class="hero-bg-grid"></div>
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="container">
-    <div class="eyebrow">Semester 1 · 24 Agt 2026 – 30 Agt 2026</div>
-    <h1>Jadwal <span class="gradient-text">Pelajaran</span></h1>
-    <p class="lead">Jadwal harian Kelas X TKJT 1 minggu ini, Senin sampai Jumat.</p>
+  <div class="network-decor" aria-hidden="true">
+    <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="netGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#22d3ee"/>
+          <stop offset="100%" stop-color="#8b5cf6"/>
+        </linearGradient>
+      </defs>
+      <line class="n-line" x1="40" y1="60" x2="220" y2="140"/>
+      <line class="n-line slow" x1="220" y1="140" x2="180" y2="300"/>
+      <line class="n-line" x1="220" y1="140" x2="360" y2="90"/>
+      <line class="n-line slow" x1="180" y1="300" x2="340" y2="330"/>
+      <line class="n-line" x1="360" y1="90" x2="340" y2="330"/>
+      <line class="n-line slow" x1="40" y1="60" x2="180" y2="300"/>
+      <circle class="n-dot" cx="40" cy="60" r="4"/>
+      <circle class="n-dot" cx="220" cy="140" r="5"/>
+      <circle class="n-dot" cx="360" cy="90" r="4"/>
+      <circle class="n-dot" cx="180" cy="300" r="4"/>
+      <circle class="n-dot" cx="340" cy="330" r="5"/>
+    </svg>
   </div>
-</section>
-
-<section class="jadwal-section">
   <div class="container">
+    <div class="eyebrow">Akademik</div>
+    <h1>Jadwal <span class="gradient-text">Pelajaran</span></h1>
+    <p>Jadwal harian kelas X TJKT 1, Senin sampai Jumat. Pilih hari untuk melihat detail mata pelajaran.</p>
+    <div class="head-badges">
+      <span class="head-badge">🕐 5 Hari Aktif</span>
+      <span class="head-badge">📖 Update Tiap Semester</span>
+    </div>
+  </div>
+</header>
 
-    <div class="jadwal-day">
-      <h3>Senin</h3>
-      <span class="tanggal">24 Agustus 2026</span>
-      <div class="jadwal-wrap">
-        <table class="jadwal-table">
-          <thead><tr><th>Waktu</th><th>Mata Pelajaran</th></tr></thead>
-          <tbody>
-            <tr class="istirahat"><td class="jam">07:00–07:45</td><td colspan="2">Upacara</td></tr>
-            <tr><td class="jam">Jam 1 · 07:45–08:25</td><td>Dasar-dasar Program Keahlian TKJ</td></tr>
-            <tr><td class="jam">Jam 2 · 08:25–09:05</td><td>Dasar-dasar Program Keahlian TKJ</td></tr>
-            <tr><td class="jam">Jam 3 · 09:05–09:45</td><td>Dasar-dasar Program Keahlian TKJ</td></tr>
-            <tr class="istirahat"><td class="jam">09:45–10:00</td><td colspan="2">Istirahat</td></tr>
-            <tr><td class="jam">Jam 4 · 10:00–10:40</td><td>Bahasa Inggris</td></tr>
-            <tr><td class="jam">Jam 5 · 10:40–11:20</td><td>Bahasa Inggris</td></tr>
-            <tr><td class="jam">Jam 6 · 11:20–12:00</td><td>Bimbingan Konseling</td></tr>
-            <tr class="istirahat"><td class="jam">12:00–13:00</td><td colspan="2">Ishoma</td></tr>
-            <tr><td class="jam">Jam 7 · 13:00–13:40</td><td>Matematika</td></tr>
-            <tr><td class="jam">Jam 8 · 13:40–14:20</td><td>Matematika</td></tr>
-            <tr><td class="jam">Jam 9 · 14:20–15:00</td><td>Informatika</td></tr>
-            <tr><td class="jam">Jam 10 · 15:00–15:40</td><td>Informatika</td></tr>
-          </tbody>
-        </table>
-      </div>
+<section id="jadwal">
+  <div class="container">
+    <div class="day-tabs fade-up" id="dayTabs">
+      <button class="day-tab active" data-day="senin">Senin</button>
+      <button class="day-tab" data-day="selasa">Selasa</button>
+      <button class="day-tab" data-day="rabu">Rabu</button>
+      <button class="day-tab" data-day="kamis">Kamis</button>
+      <button class="day-tab" data-day="jumat">Jumat</button>
     </div>
 
-    <div class="jadwal-day">
-      <h3>Selasa</h3>
-      <span class="tanggal">25 Agustus 2026</span>
-      <div class="jadwal-wrap">
-        <table class="jadwal-table">
-          <thead><tr><th>Waktu</th><th>Mata Pelajaran</th></tr></thead>
-          <tbody>
-            <tr class="istirahat"><td class="jam">07:00–07:15</td><td colspan="2">Pagi BerIMAN</td></tr>
-            <tr><td class="jam">Jam 1 · 07:15–07:45</td><td>PJOK</td></tr>
-            <tr><td class="jam">Jam 2 · 07:45–08:25</td><td>PJOK</td></tr>
-            <tr><td class="jam">Jam 3 · 08:25–09:05</td><td>PJOK</td></tr>
-            <tr><td class="jam">Jam 4 · 09:05–09:45</td><td>Pendidikan Agama &amp; Budi Pekerti<br><span class="guru">(Islam / Konghucu / Kristen sesuai agama masing-masing)</span></td></tr>
-            <tr class="istirahat"><td class="jam">09:45–10:00</td><td colspan="2">Istirahat</td></tr>
-            <tr><td class="jam">Jam 5 · 10:00–10:40</td><td>Pendidikan Agama &amp; Budi Pekerti</td></tr>
-            <tr><td class="jam">Jam 6 · 10:40–11:20</td><td>Pendidikan Agama &amp; Budi Pekerti</td></tr>
-            <tr><td class="jam">Jam 7 · 11:20–12:00</td><td>Pendidikan Pancasila dan Kewarganegaraan</td></tr>
-            <tr class="istirahat"><td class="jam">12:00–13:00</td><td colspan="2">Ishoma</td></tr>
-            <tr><td class="jam">Jam 8 · 13:00–13:40</td><td>Pendidikan Pancasila dan Kewarganegaraan</td></tr>
-            <tr><td class="jam">Jam 9 · 13:40–14:20</td><td>Dasar-dasar Program Keahlian TKJ</td></tr>
-            <tr><td class="jam">Jam 10 · 14:20–15:00</td><td>Dasar-dasar Program Keahlian TKJ</td></tr>
-            <tr><td class="jam">Jam 11 · 15:00–15:40</td><td>Dasar-dasar Program Keahlian TKJ</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <div class="schedule-wrap fade-up" id="jadwalWrap"><div class="schedule-day active" style="text-align:center;color:var(--muted);padding:20px;">Memuat jadwal...</div></div>
 
-    <div class="jadwal-day">
-      <h3>Rabu</h3>
-      <span class="tanggal">26 Agustus 2026</span>
-      <div class="jadwal-wrap">
-        <table class="jadwal-table">
-          <thead><tr><th>Waktu</th><th>Mata Pelajaran</th></tr></thead>
-          <tbody>
-            <tr class="istirahat"><td class="jam">07:00–07:15</td><td colspan="2">Pagi BerIMAN</td></tr>
-            <tr><td class="jam">Jam 1 · 07:15–07:45</td><td>Projek IPAS</td></tr>
-            <tr><td class="jam">Jam 2 · 07:45–08:25</td><td>Projek IPAS</td></tr>
-            <tr><td class="jam">Jam 3 · 08:25–09:05</td><td>Projek IPAS</td></tr>
-            <tr><td class="jam">Jam 4 · 09:05–09:45</td><td>Bahasa Inggris</td></tr>
-            <tr class="istirahat"><td class="jam">09:45–10:00</td><td colspan="2">Istirahat</td></tr>
-            <tr><td class="jam">Jam 5 · 10:00–10:40</td><td>Bahasa Inggris</td></tr>
-            <tr><td class="jam">Jam 6 · 10:40–11:20</td><td>Bahasa Indonesia</td></tr>
-            <tr><td class="jam">Jam 7 · 11:20–12:00</td><td>Bahasa Indonesia</td></tr>
-            <tr class="istirahat"><td class="jam">12:00–13:00</td><td colspan="2">Ishoma</td></tr>
-            <tr><td class="jam">Jam 8 · 13:00–13:40</td><td>Informatika</td></tr>
-            <tr><td class="jam">Jam 9 · 13:40–14:20</td><td>Informatika</td></tr>
-            <tr><td class="jam">Jam 10 · 14:20–15:00</td><td>Sejarah</td></tr>
-            <tr><td class="jam">Jam 11 · 15:00–15:30</td><td>Sejarah</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="jadwal-day">
-      <h3>Kamis</h3>
-      <span class="tanggal">27 Agustus 2026</span>
-      <div class="jadwal-wrap">
-        <table class="jadwal-table">
-          <thead><tr><th>Waktu</th><th>Mata Pelajaran</th></tr></thead>
-          <tbody>
-            <tr class="istirahat"><td class="jam">07:00–07:15</td><td colspan="2">Pagi BerIMAN</td></tr>
-            <tr><td class="jam">Jam 1 · 07:15–07:45</td><td>Projek IPAS</td></tr>
-            <tr><td class="jam">Jam 2 · 07:45–08:25</td><td>Projek IPAS</td></tr>
-            <tr><td class="jam">Jam 3 · 08:25–09:05</td><td>Projek IPAS</td></tr>
-            <tr><td class="jam">Jam 4 · 09:05–09:45</td><td>Seni Budaya</td></tr>
-            <tr class="istirahat"><td class="jam">09:45–10:00</td><td colspan="2">Istirahat</td></tr>
-            <tr><td class="jam">Jam 5 · 10:00–10:40</td><td>Seni Budaya</td></tr>
-            <tr><td class="jam">Jam 6 · 10:40–11:20</td><td>Dasar-dasar Program Keahlian TKJ</td></tr>
-            <tr><td class="jam">Jam 7 · 11:20–12:00</td><td>Dasar-dasar Program Keahlian TKJ</td></tr>
-            <tr class="istirahat"><td class="jam">12:00–13:00</td><td colspan="2">Ishoma</td></tr>
-            <tr><td class="jam">Jam 8 · 13:00–13:40</td><td>Dasar-dasar Program Keahlian TKJ</td></tr>
-            <tr><td class="jam">Jam 9 · 13:40–14:20</td><td>Matematika</td></tr>
-            <tr><td class="jam">Jam 10 · 14:20–15:00</td><td>Matematika</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="jadwal-day">
-      <h3>Jumat</h3>
-      <span class="tanggal">28 Agustus 2026</span>
-      <div class="jadwal-wrap">
-        <table class="jadwal-table">
-          <thead><tr><th>Waktu</th><th>Mata Pelajaran</th></tr></thead>
-          <tbody>
-            <tr class="istirahat"><td class="jam">07:00–07:30</td><td colspan="2">Kegiatan Pagi</td></tr>
-            <tr><td class="jam">Jam 1 · 07:30–08:10</td><td>Bahasa Indonesia</td></tr>
-            <tr><td class="jam">Jam 2 · 08:10–08:50</td><td>Bahasa Indonesia</td></tr>
-            <tr class="istirahat"><td class="jam">08:50–09:05</td><td colspan="2">Istirahat</td></tr>
-            <tr><td class="jam">Jam 3 · 09:05–09:45</td><td>Dasar-dasar Program Keahlian TKJ</td></tr>
-            <tr><td class="jam">Jam 4 · 09:45–10:25</td><td>Dasar-dasar Program Keahlian TKJ</td></tr>
-            <tr><td class="jam">Jam 5 · 10:25–11:05</td><td>Dasar-dasar Program Keahlian TKJ</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
+    <p class="jadwal-note fade-up">📌 Jadwal dapat berubah sewaktu-waktu mengikuti kalender akademik sekolah. Update terakhir menyusul dari wali kelas.</p>
   </div>
 </section>
 
@@ -232,6 +127,10 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 
-<script src="main.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="js/data.js"></script>
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

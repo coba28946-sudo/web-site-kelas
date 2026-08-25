@@ -1,16 +1,14 @@
 // ============================================================
-// ADMIN PANEL — logika edit data (siswa, jadwal, piket, kas)
-// Data kerja disimpan di memori (dan opsional draf di localStorage),
-// lalu diunduh sebagai js/data.js untuk menggantikan file aslinya.
+// ADMIN PANEL — logika edit data (siswa, jadwal, piket, kas, galeri)
+// Login pakai Firebase Authentication, data disimpan real-time di
+// Firebase Firestore, foto disimpan di Firebase Storage.
 // ============================================================
 (function () {
-  // Hash SHA-256 dari sandi admin (bukan teks polos).
-  // Sandi default: admintjkt1
-  // Untuk mengganti: buka console browser lalu jalankan
-  //   crypto.subtle.digest('SHA-256', new TextEncoder().encode('sandi-admin-baru'))
-  //     .then(b => console.log(Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('')))
-  // lalu tempel hasilnya (64 karakter) menggantikan ADMIN_HASH di bawah.
-  const ADMIN_HASH = '352df6859167c1a00391a23fc6d535ea4561cd560ca263b976f30548528af074';
+  // Email akun admin di Firebase Authentication (dibuat sekali lewat
+  // Firebase Console → Authentication → Users → Add user).
+  // Semua admin login pakai email yang SAMA ini + password yang kamu
+  // set di sana. Lihat PANDUAN-SETUP.md.
+  const ADMIN_EMAIL = 'admin@tjkt1-web.local';
 
   const adminForm = document.getElementById('adminForm');
   const adminInput = document.getElementById('adminPassword');
@@ -18,10 +16,21 @@
   const adminLock = document.getElementById('adminLock');
   const adminContent = document.getElementById('adminContent');
 
-  async function sha256Hex(text) {
-    const enc = new TextEncoder().encode(text);
-    const buf = await crypto.subtle.digest('SHA-256', enc);
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  function firebaseConfigured() {
+    return (typeof FIREBASE_CONFIG !== 'undefined')
+      && FIREBASE_CONFIG.apiKey
+      && !String(FIREBASE_CONFIG.apiKey).includes('TEMPEL');
+  }
+
+  let auth = null;
+  let db = null;
+  let storage = null;
+
+  if (firebaseConfigured() && typeof firebase !== 'undefined') {
+    if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    auth = firebase.auth();
+    db = firebase.firestore();
+    storage = firebase.storage();
   }
 
   function unlock() {
@@ -30,11 +39,11 @@
     initAdmin();
   }
 
-  let adminPasswordPlain = '';
-
-  if (sessionStorage.getItem('adminUnlocked') === '1') {
-    adminPasswordPlain = sessionStorage.getItem('adminPasswordPlain') || '';
-    unlock();
+  // Kalau Firebase belum di-setup sama sekali, kasih tahu di gerbang sandi.
+  if (!firebaseConfigured()) {
+    if (adminError) {
+      adminError.textContent = '';
+    }
   }
 
   if (adminForm) {
@@ -42,21 +51,31 @@
       e.preventDefault();
       const val = adminInput.value.trim();
       if (!val) return;
+
+      if (!firebaseConfigured() || !auth) {
+        adminError.textContent = 'Firebase belum di-setup — isi js/config.js dulu (lihat PANDUAN-SETUP.md).';
+        return;
+      }
+
+      adminError.textContent = '';
       try {
-        const hash = await sha256Hex(val);
-        if (hash === ADMIN_HASH) {
-          adminPasswordPlain = val;
-          sessionStorage.setItem('adminUnlocked', '1');
-          sessionStorage.setItem('adminPasswordPlain', val);
-          adminError.textContent = '';
-          unlock();
-        } else {
-          adminError.textContent = 'Sandi salah, coba lagi.';
-          adminInput.value = '';
-          adminInput.focus();
-        }
+        await auth.signInWithEmailAndPassword(ADMIN_EMAIL, val);
+        adminInput.value = '';
+        unlock();
       } catch (err) {
-        adminError.textContent = 'Sandi hanya bisa diperiksa lewat koneksi HTTPS.';
+        adminError.textContent = 'Sandi salah, coba lagi.';
+        adminInput.value = '';
+        adminInput.focus();
+      }
+    });
+  }
+
+  // Kalau sesi login Firebase masih aktif (browser sama, belum logout),
+  // langsung masuk tanpa minta sandi lagi.
+  if (auth) {
+    auth.onAuthStateChanged((user) => {
+      if (user && adminLock && adminLock.style.display !== 'none' && !adminContent.classList.contains('unlocked')) {
+        unlock();
       }
     });
   }
@@ -67,17 +86,6 @@
   let jadwalDay = 'senin';
   let piketDay = 'senin';
   let initialized = false;
-
-  function apiConfigured() {
-    return (typeof API_URL !== 'undefined') && API_URL && !API_URL.includes('TEMPEL_URL');
-  }
-
-  async function fetchFromSheets() {
-    if (!apiConfigured()) return null;
-    const res = await fetch(API_URL);
-    if (!res.ok) throw new Error('Gagal mengambil data dari Google Sheets.');
-    return res.json();
-  }
 
   function initAdmin() {
     if (initialized) return;
@@ -92,19 +100,28 @@
     loadInitialData();
   }
 
+  async function fetchFromFirestore() {
+    const snap = await db.collection('site').doc('data').get();
+    if (!snap.exists) return null;
+    return snap.data();
+  }
+
   async function loadInitialData() {
-    if (apiConfigured()) {
-      flashMsg('Memuat data dari Google Sheets...');
+    if (db) {
+      flashMsg('Memuat data dari Firebase...');
       try {
-        const fresh = await fetchFromSheets();
-        fresh.galeri = fresh.galeri || [];
-        data = fresh;
-        originalData = JSON.parse(JSON.stringify(fresh));
-        renderAll();
-        flashMsg('Data terbaru dari Google Sheets berhasil dimuat.');
-        return;
+        const fresh = await fetchFromFirestore();
+        if (fresh) {
+          fresh.galeri = fresh.galeri || [];
+          data = fresh;
+          originalData = JSON.parse(JSON.stringify(fresh));
+          renderAll();
+          flashMsg('Data terbaru dari Firebase berhasil dimuat.');
+          return;
+        }
+        flashMsg('Belum ada data di Firebase — mulai dari data cadangan.');
       } catch (err) {
-        flashMsg('Gagal ambil data dari Sheets — pakai data cadangan.');
+        flashMsg('Gagal ambil data dari Firebase — pakai data cadangan.');
       }
     }
     data = JSON.parse(JSON.stringify(SITE_DATA));
@@ -156,11 +173,11 @@
     const byId = document.getElementById.bind(document);
 
     byId('btnReload').addEventListener('click', async () => {
-      if (!confirm('Muat ulang dari Google Sheets? Perubahan yang belum disimpan akan hilang.')) return;
+      if (!confirm('Muat ulang dari Firebase? Perubahan yang belum disimpan akan hilang.')) return;
       await loadInitialData();
     });
 
-    byId('btnSaveCloud').addEventListener('click', saveToSheets);
+    byId('btnSaveCloud').addEventListener('click', saveToFirebase);
 
     byId('btnReset').addEventListener('click', () => {
       if (!confirm('Batalkan semua perubahan yang belum disimpan?')) return;
@@ -172,34 +189,24 @@
     byId('btnDownload').addEventListener('click', downloadDataJs);
   }
 
-  async function saveToSheets() {
-    if (!apiConfigured()) {
-      flashMsg('URL Google Sheets belum di-setup (lihat js/config.js).');
+  async function saveToFirebase() {
+    if (!db) {
+      flashMsg('Firebase belum di-setup (lihat js/config.js & PANDUAN-SETUP.md).');
       return;
     }
-    flashMsg('Menyimpan ke Google Sheets...');
+    flashMsg('Menyimpan ke Firebase...');
     try {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // hindari CORS preflight Apps Script
-        body: JSON.stringify({
-          key: adminPasswordPlain,
-          siswa: data.siswa,
-          jadwal: data.jadwal,
-          piket: data.piket,
-          kas: data.kas,
-          galeri: data.galeri
-        })
+      await db.collection('site').doc('data').set({
+        siswa: data.siswa,
+        jadwal: data.jadwal,
+        piket: data.piket,
+        kas: data.kas,
+        galeri: data.galeri
       });
-      const json = await res.json();
-      if (json.success) {
-        originalData = JSON.parse(JSON.stringify(data));
-        flashMsg('Tersimpan ke Google Sheets — semua admin & pengunjung langsung lihat perubahan ini.');
-      } else {
-        flashMsg('Gagal menyimpan: ' + (json.message || 'sandi ditolak server.'));
-      }
+      originalData = JSON.parse(JSON.stringify(data));
+      flashMsg('Tersimpan — semua admin & pengunjung langsung lihat perubahan ini secara real-time.');
     } catch (err) {
-      flashMsg('Gagal menyimpan — cek koneksi internet atau URL di js/config.js.');
+      flashMsg('Gagal menyimpan: ' + (err && err.message ? err.message : 'cek koneksi atau aturan akses Firebase.'));
     }
   }
 
@@ -207,9 +214,8 @@
     const json = JSON.stringify(data, null, 2);
     const content =
       '// ============================================================\n' +
-      '// SITE_DATA — sumber data tunggal untuk semua halaman website\n' +
-      '// (siswa, jadwal, piket, kas). Diedit lewat admin.html.\n' +
-      '// Ganti file js/data.js di repo dengan file ini, lalu commit & push.\n' +
+      '// CADANGAN DATA — diekspor dari admin.html sebagai backup.\n' +
+      '// Bisa dipakai gantiin isi js/data.js kalau perlu (fallback offline).\n' +
       '// ============================================================\n' +
       'const SITE_DATA = ' + json + ';\n';
     const blob = new Blob([content], { type: 'text/javascript' });
@@ -221,7 +227,7 @@
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    flashMsg('data.js diunduh — ganti file js/data.js di repo GitHub kamu.');
+    flashMsg('data.js (cadangan) diunduh.');
   }
 
   // ================= SISWA =================
@@ -454,19 +460,6 @@
     });
   }
 
-  function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result; // data:<mime>;base64,XXXX
-        const base64 = result.split(',')[1];
-        resolve(base64);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
-
   function setupGaleriHandlers() {
     const btn = document.getElementById('btnUploadGaleri');
     const fileInput = document.getElementById('galeriFileInput');
@@ -476,37 +469,25 @@
     btn.addEventListener('click', async () => {
       const file = fileInput.files && fileInput.files[0];
       if (!file) { flashMsg('Pilih file foto dulu.'); return; }
-      if (!apiConfigured()) { flashMsg('URL Google Sheets belum di-setup (lihat js/config.js).'); return; }
+      if (!storage) { flashMsg('Firebase belum di-setup (lihat js/config.js).'); return; }
       if (file.size > 5 * 1024 * 1024) { flashMsg('Ukuran foto maksimal 5MB.'); return; }
 
       btn.disabled = true;
       flashMsg('Mengunggah foto...');
       try {
-        const base64 = await fileToBase64(file);
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({
-            key: adminPasswordPlain,
-            action: 'uploadImage',
-            fileName: file.name,
-            mimeType: file.type,
-            imageBase64: base64
-          })
-        });
-        const json = await res.json();
-        if (json.success) {
-          data.galeri = data.galeri || [];
-          data.galeri.push({ url: json.url, caption: captionInput.value.trim() });
-          renderGaleriAdmin();
-          fileInput.value = '';
-          captionInput.value = '';
-          flashMsg('Foto diunggah. Klik "☁️ Simpan ke Google Sheets" biar tersimpan permanen.');
-        } else {
-          flashMsg('Gagal unggah: ' + (json.message || 'terjadi kesalahan.'));
-        }
+        const path = 'galeri/' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+        const ref = storage.ref(path);
+        await ref.put(file);
+        const url = await ref.getDownloadURL();
+
+        data.galeri = data.galeri || [];
+        data.galeri.push({ url: url, caption: captionInput.value.trim() });
+        renderGaleriAdmin();
+        fileInput.value = '';
+        captionInput.value = '';
+        flashMsg('Foto diunggah. Klik "☁️ Simpan" biar tersimpan permanen & tampil di halaman publik.');
       } catch (err) {
-        flashMsg('Gagal unggah — cek koneksi internet.');
+        flashMsg('Gagal unggah: ' + (err && err.message ? err.message : 'cek aturan akses Storage.'));
       } finally {
         btn.disabled = false;
       }

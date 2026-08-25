@@ -332,7 +332,7 @@ function renderGaleriFromData() {
   grid.querySelectorAll('.fade-up').forEach(el => el.classList.add('visible'));
 }
 
-// ===== MUAT DATA (Google Sheets via API, fallback ke js/data.js) =====
+// ===== MUAT DATA (Firebase Firestore, real-time; fallback ke js/data.js) =====
 function loadSiteDataAndRender() {
   const hasContainer = document.getElementById('siswaBody')
     || document.getElementById('jadwalWrap')
@@ -354,19 +354,33 @@ function loadSiteDataAndRender() {
     initDayTabs();
   }
 
-  const apiConfigured = (typeof API_URL !== 'undefined') && API_URL && !API_URL.includes('TEMPEL_URL');
+  const firebaseConfigured = (typeof FIREBASE_CONFIG !== 'undefined')
+    && FIREBASE_CONFIG.apiKey && !String(FIREBASE_CONFIG.apiKey).includes('TEMPEL');
 
-  if (!apiConfigured) {
+  if (!firebaseConfigured || typeof firebase === 'undefined') {
     if (fallback) renderWith(fallback);
     return;
   }
 
-  fetch(API_URL)
-    .then(r => r.json())
-    .then(json => renderWith(json))
-    .catch(() => {
-      if (fallback) renderWith(fallback);
-    });
+  try {
+    if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    const db = firebase.firestore();
+    // onSnapshot = listener real-time: tiap ada perubahan di Firestore
+    // (misal admin lain baru saja Simpan), halaman ini otomatis update
+    // sendiri tanpa perlu di-refresh.
+    db.collection('site').doc('data').onSnapshot(
+      (doc) => {
+        if (doc.exists) {
+          renderWith(doc.data());
+        } else if (fallback) {
+          renderWith(fallback);
+        }
+      },
+      () => { if (fallback) renderWith(fallback); }
+    );
+  } catch (err) {
+    if (fallback) renderWith(fallback);
+  }
 }
 
 loadSiteDataAndRender();

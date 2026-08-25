@@ -1,156 +1,141 @@
-# Panduan Setup — Google Sheets buat 5 Admin
+# Panduan Setup — Firebase (Real-time, buat 5 Admin)
 
-Ikuti urutan ini sekali aja di awal. Setelah selesai, ke-5 admin tinggal buka
-`admin.html` dari komputer masing-masing dan datanya otomatis sinkron.
+Lebih simpel dari cara Google Sheets sebelumnya — gak ada nama tab/kolom yang
+harus persis, dan perubahan langsung real-time ke semua orang tanpa refresh.
 
----
-
-## 1. Bikin Google Sheet
-
-1. Buka [sheets.google.com](https://sheets.google.com) → **Blank spreadsheet**.
-2. Kasih nama misalnya **"Data Website X TJKT 1"**.
-3. Buat 4 tab (klik `+` di pojok kiri bawah), kasih nama **persis** seperti ini
-   (huruf besar/kecil harus sama):
-   - `Siswa`
-   - `Jadwal`
-   - `Piket`
-   - `Kas`
-4. Isi baris pertama (header) tiap tab seperti ini:
-
-   **Tab `Siswa`**
-   | No | Nama | Absen | JK |
-   |----|------|-------|----|
-   | 1  | Nama Siswa 1 | 01 | Laki-laki |
-
-   **Tab `Jadwal`**
-   | Hari | Jam | Mapel | Istirahat |
-   |------|-----|-------|-----------|
-   | Senin | 07.00 - 07.15 | Upacara / Literasi Pagi | FALSE |
-
-   **Tab `Piket`**
-   | Hari | Kelompok | Anggota (pisah koma) | Tugas (pisah koma) |
-   |------|----------|----------------------|---------------------|
-   | Senin | Kelompok 1 | Nama Siswa 1, Nama Siswa 2 | Menyapu kelas, Buang sampah |
-
-   **Tab `Kas`**
-   | Tanggal | Keterangan | Tipe | Jumlah |
-   |---------|------------|------|--------|
-   | 01 Agu 2026 | Iuran kas minggu 1 | masuk | 180000 |
-
-   **Tab `Galeri`** *(boleh dikosongkan dulu — otomatis terisi & terbuat sendiri saat pertama kali upload foto lewat admin.html)*
-   | URL | Caption |
-   |-----|---------|
-
-   *(Baris contoh boleh dihapus setelah nanti diisi otomatis lewat admin.html — atau isi manual juga boleh, sheet-nya dibaca apa adanya.)*
-
-5. Ambil **ID Sheet**-nya dari URL browser. Formatnya:
-   ```
-   https://docs.google.com/spreadsheets/d/INI_ID_SHEET_NYA/edit
-   ```
-   Copy bagian `INI_ID_SHEET_NYA`.
+Ikuti urutan ini sekali aja di awal.
 
 ---
 
-## 1.5. Bikin folder Google Drive buat foto Galeri
+## 1. Bikin Project Firebase
 
-1. Buka [drive.google.com](https://drive.google.com) → **New → New folder**.
-2. Kasih nama misalnya **"Foto Website X TJKT 1"**.
-3. Masuk ke folder itu, ambil **ID Folder**-nya dari URL browser. Formatnya:
-   ```
-   https://drive.google.com/drive/folders/INI_ID_FOLDER_NYA
-   ```
-   Copy bagian `INI_ID_FOLDER_NYA`.
-
-*(Folder ini nanti otomatis diisi Apps Script tiap kali admin upload foto lewat admin.html — gak perlu diapa-apain lagi setelah dibuat.)*
+1. Buka [console.firebase.google.com](https://console.firebase.google.com), login pakai akun Google.
+2. Klik **Add project** (atau "Create a project").
+3. Kasih nama, misal **"tjkt1-web"** → Continue.
+4. Google Analytics boleh **dimatikan** (gak perlu buat website kelas) → Create project.
+5. Tunggu sampai selesai → Continue.
 
 ---
 
-## 2. Pasang Apps Script
+## 2. Daftarkan Web App & Ambil Config
 
-1. Di Google Sheet yang sama, klik menu **Extensions → Apps Script**.
-2. Hapus semua kode default yang ada di editor.
-3. Buka file **`AppsScript-Code.gs`** (saya sediakan terpisah), copy semua isinya,
-   tempel ke editor Apps Script.
-4. Cari baris ini di paling atas:
+1. Di halaman utama project, klik ikon **`</>`** (Web) buat nambah app.
+2. Kasih nickname, misal **"Website TJKT 1"** → Register app.
+3. **Jangan install apa-apa** (skip bagian "Add Firebase SDK", karena kita udah pakai lewat link CDN) → klik **Continue to console**.
+4. Nanti muncul kode config kayak gini — **copy semuanya**:
    ```js
-   const SHEET_ID = 'TEMPEL_ID_SHEET_DI_SINI';
-   const DRIVE_FOLDER_ID = 'TEMPEL_ID_FOLDER_DRIVE_DI_SINI';
+   const firebaseConfig = {
+     apiKey: "AIzaSy...",
+     authDomain: "tjkt1-web.firebaseapp.com",
+     projectId: "tjkt1-web",
+     storageBucket: "tjkt1-web.appspot.com",
+     messagingSenderId: "123456789",
+     appId: "1:123456789:web:abcdef"
+   };
    ```
-   Ganti keduanya dengan ID sheet (langkah 1.5) dan ID folder Drive (langkah 1.5 khusus Drive) tadi.
-5. Klik ikon 💾 **Save** (atau Ctrl+S).
-
----
-
-## 3. Deploy sebagai Web App
-
-1. Di Apps Script, klik **Deploy → New deployment**.
-2. Klik ikon ⚙️ di sebelah "Select type" → pilih **Web app**.
-3. Isi:
-   - **Description**: bebas, misal "API Website TJKT 1"
-   - **Execute as**: **Me (email kamu)**
-   - **Who has access**: **Anyone**
-4. Klik **Deploy**.
-5. Google akan minta izin akses (**Authorize access**) — pilih akun Google kamu,
-   klik **Advanced** → **Go to (nama project) (unsafe)** → **Allow**.
-   *(Ini normal, karena scriptnya belum "diverifikasi Google" — wajar untuk script pribadi begini.
-   Izin yang diminta mencakup akses ke Sheets DAN Drive, karena dipakai juga buat nyimpen foto galeri.)*
-6. Setelah deploy selesai, copy **Web app URL** yang muncul. Formatnya:
-   ```
-   https://script.google.com/macros/s/AKfycb................/exec
-   ```
-
-⚠️ **Simpan URL ini baik-baik** — ini "alamat API" website kamu.
-
----
-
-## 4. Isi URL ke Website
-
-1. Buka file `js/config.js` di folder website kamu.
-2. Ganti baris:
+5. Buka file **`js/config.js`** di folder website kamu, ganti isinya jadi:
    ```js
-   const API_URL = 'TEMPEL_URL_WEB_APP_DI_SINI';
+   const FIREBASE_CONFIG = {
+     apiKey: "AIzaSy...",          // ganti sesuai punya kamu
+     authDomain: "tjkt1-web.firebaseapp.com",
+     projectId: "tjkt1-web",
+     storageBucket: "tjkt1-web.appspot.com",
+     messagingSenderId: "123456789",
+     appId: "1:123456789:web:abcdef"
+   };
    ```
-   dengan URL dari langkah 3.6 tadi, jadi misalnya:
-   ```js
-   const API_URL = 'https://script.google.com/macros/s/AKfycb.../exec';
-   ```
-3. Upload ulang file `js/config.js` itu ke repo GitHub kamu (replace file lama), commit & push.
+   (Tinggal copy-paste 6 baris dari langkah 4 ke dalam `FIREBASE_CONFIG`.)
 
-Selesai! Sekarang:
-- `siswa.html`, `jadwal.html`, `piket.html`, `kas.html` otomatis **membaca** data dari Google Sheets tiap dibuka pengunjung.
-- `admin.html` bisa dipakai 5 admin dari komputer manapun — tombol **"Simpan ke Google Sheets"** langsung update data buat semua orang.
+*(Kalau lupa buka config ini lagi nanti: Firebase Console → ikon ⚙️ di sidebar kiri atas → Project settings → scroll ke bawah ke "Your apps".)*
 
 ---
 
-## 5. Bagikan akses ke 4 admin lainnya
+## 3. Aktifkan Firestore Database (tempat nyimpen data)
 
-- Kalau mereka juga mau bisa **lihat/edit langsung di Google Sheets** (opsional, di luar admin.html): klik **Share** di Sheet, tambahkan email mereka dengan akses **Editor**.
-- Kalau cukup lewat `admin.html` aja: mereka cukup dikasih tahu alamat `admin.html` dan sandinya (**`admintjkt1`** secara default) — gak perlu akses langsung ke Sheets.
+1. Di sidebar kiri, klik **Build → Firestore Database**.
+2. Klik **Create database**.
+3. Pilih lokasi server terdekat (misal `asia-southeast2 (Jakarta)`) → Next.
+4. Pilih **Start in production mode** → Enable.
+5. Setelah kebuka, klik tab **Rules** di bagian atas, hapus semua isinya, ganti dengan:
+   ```
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       match /site/data {
+         allow read: if true;
+         allow write: if request.auth != null;
+       }
+     }
+   }
+   ```
+6. Klik **Publish**.
+
+*(Artinya: semua orang boleh baca datanya buat ditampilkan di website, tapi cuma yang sudah login admin yang boleh mengubah.)*
 
 ---
 
-## Kalau mau ganti sandi admin
+## 4. Aktifkan Authentication (buat login admin)
 
-Sandinya dipakai di **dua tempat**, kedua-duanya harus diganti bareng:
-1. `js/admin.js` — cari `ADMIN_HASH`
-2. `AppsScript-Code.gs` (yang sudah kamu paste ke Apps Script) — cari `ADMIN_HASH` juga
+1. Di sidebar kiri, klik **Build → Authentication**.
+2. Klik **Get started**.
+3. Di tab **Sign-in method**, klik **Email/Password**, aktifkan toggle-nya → **Save**.
+4. Pindah ke tab **Users**, klik **Add user**.
+5. Isi:
+   - **Email**: `admin@tjkt1-web.local` *(pakai persis ini — atau kalau mau ganti, sesuaikan juga `ADMIN_EMAIL` di `js/admin.js`)*
+   - **Password**: bikin sandi admin kamu sendiri (minimal 6 karakter) — **ini yang bakal dipakai buat login di admin.html**
+6. Klik **Add user**.
 
-Cara generate hash baru: buka console browser (F12), jalankan:
-```js
-crypto.subtle.digest('SHA-256', new TextEncoder().encode('sandi-baru-kamu'))
-  .then(b => console.log(Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('')))
-```
-Copy hasilnya (64 karakter), tempel ke dua tempat di atas. Setelah ganti di Apps Script,
-kamu perlu **Deploy → Manage deployments → Edit (pensil) → Deploy** ulang biar perubahan aktif.
+💡 **Kalau mau 5 admin punya sandi masing-masing** (bukan sandi bareng-bareng): ulangi langkah 4-6 dengan email berbeda per admin (misal `admin1@tjkt1-web.local`, `admin2@tjkt1-web.local`, dst), lalu di `js/admin.js` kamu perlu ubah dikit logikanya biar bisa pilih email — bisa tanya saya lagi kalau mau versi ini.
+
+---
+
+## 5. Aktifkan Storage (tempat nyimpen foto galeri)
+
+1. Di sidebar kiri, klik **Build → Storage**.
+2. Klik **Get started** → **Next** → pilih lokasi yang **sama** kayak Firestore tadi → **Done**.
+3. Klik tab **Rules**, ganti isinya jadi:
+   ```
+   rules_version = '2';
+   service firebase.storage {
+     match /b/{bucket}/o {
+       match /galeri/{fileName} {
+         allow read: if true;
+         allow write: if request.auth != null;
+       }
+     }
+   }
+   ```
+4. Klik **Publish**.
+
+---
+
+## 6. Upload ke GitHub
+
+Upload semua file website (`*.html`, folder `css/`, folder `js/` — termasuk `js/config.js`
+yang udah diisi tadi — dan `assets/`) ke repo GitHub kamu, replace yang lama, commit & push.
+
+---
+
+## Selesai! Cara Pakai
+
+- **Halaman publik** (`index.html`, `jadwal.html`, `siswa.html`, `piket.html`, `kas.html`, `galeri.html`):
+  otomatis nampilin data dari Firebase, **update sendiri secara real-time** kalau ada admin yang baru simpan
+  perubahan — pengunjung gak perlu refresh.
+- **`admin.html`**: buka, masukin sandi (yang kamu buat di langkah 4.5) → edit data di 5 tab
+  (Siswa, Jadwal, Piket, Kas, Galeri) → klik **☁️ Simpan (Real-time)**.
 
 ---
 
 ## Troubleshooting
 
-- **Data gak muncul / kosong**: cek `js/config.js` — pastikan URL-nya udah diisi bener (bukan placeholder `TEMPEL_URL...`).
-- **"Gagal menyimpan"**: biasanya karena sandi salah, atau URL API belum di-deploy dengan akses **Anyone**.
-- **Setelah edit Apps Script tapi gak ngaruh**: kamu harus deploy ulang lewat **Deploy → Manage deployments → Edit → Deploy** — bukan cuma Save di editor.
-- **Sheet tab-nya kehapus header pas disimpan dari admin.html**: normal, itu ke-generate ulang otomatis tiap simpan — jangan diedit manual barengan sama admin lain di waktu yang sama biar gak tabrakan.
-- **Upload foto gagal / lama**: pastikan `DRIVE_FOLDER_ID` di Apps Script udah diisi bener, dan ukuran foto di bawah 5MB. Foto besar akan lebih lama diproses karena dikirim sebagai teks (base64).
-- **Foto ke-upload tapi gak muncul di galeri.html**: setelah upload, foto baru masuk ke draf admin panel — masih perlu klik **☁️ Simpan ke Google Sheets** biar tersimpan permanen dan muncul di halaman publik.
-- **Gambar dari Drive gak muncul / kotak rusak**: coba buka folder Drive-nya, pastikan sharing filenya "Anyone with the link" (harusnya otomatis kesetel lewat script). Kalau masih gagal, buka file-nya manual di Drive, klik **Share → General access → Anyone with the link**.
+- **"Sandi salah" padahal yakin bener**: cek lagi email di Firebase Console → Authentication → Users,
+  pastikan persis `admin@tjkt1-web.local` (atau email yang kamu pakai, harus sama dengan `ADMIN_EMAIL`
+  di `js/admin.js`).
+- **Data gak muncul sama sekali**: cek `js/config.js`, pastikan semua field udah diisi (bukan
+  `TEMPEL_...` lagi).
+- **"Firebase belum di-setup" terus muncul**: berarti `js/config.js` masih placeholder atau ada typo —
+  cek ulang tiap field-nya persis sama seperti yang di-copy dari Firebase Console.
+- **Gagal menyimpan / gagal upload foto**: kemungkinan Rules di langkah 3.5 atau 5.3 belum ke-**Publish**,
+  atau kamu belum login (coba logout & login ulang di admin.html).
+- **Upload foto lama/gagal buat file besar**: maksimal 5MB per foto, ukuran lebih besar dari itu ditolak
+  duluan sama admin panel.

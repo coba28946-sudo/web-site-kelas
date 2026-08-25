@@ -42,16 +42,16 @@
   <div class="kas-content" id="adminContent">
 
     <div class="admin-banner">
-      ☁️ Data di panel ini <strong>tersimpan di Google Sheets</strong> yang bisa diakses semua admin dari
-      komputer mana pun. Klik <strong>"Muat Ulang"</strong> buat ambil data terbaru sebelum mulai edit
-      (kalau admin lain baru saja mengubah sesuatu), dan klik <strong>"Simpan ke Google Sheets"</strong>
-      setelah selesai edit supaya semua admin & pengunjung website langsung lihat perubahannya.
+      ☁️ Data di panel ini <strong>tersimpan di Firebase</strong> dan <strong>real-time</strong> —
+      begitu kamu klik <strong>"Simpan"</strong>, semua admin lain & pengunjung website langsung
+      lihat perubahannya <em>tanpa perlu refresh halaman</em>. Klik <strong>"Muat Ulang"</strong>
+      kalau mau pastikan kamu mulai edit dari data paling baru.
     </div>
 
     <div class="admin-msg" id="adminMsg"></div>
     <div class="admin-actions">
-      <button class="btn btn-sm btn-outline" id="btnReload">🔄 Muat Ulang dari Sheets</button>
-      <button class="btn btn-sm btn-primary" id="btnSaveCloud">☁️ Simpan ke Google Sheets</button>
+      <button class="btn btn-sm btn-outline" id="btnReload">🔄 Muat Ulang</button>
+      <button class="btn btn-sm btn-primary" id="btnSaveCloud">☁️ Simpan (Real-time)</button>
       <button class="btn btn-sm btn-outline" id="btnDownload">⬇️ Ekspor data.js (cadangan)</button>
       <button class="btn btn-sm btn-danger-outline" id="btnReset">🗑️ Batalkan Perubahan</button>
     </div>
@@ -165,6 +165,10 @@
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-storage-compat.js"></script>
 <script src="js/data.js"></script>
 <script src="js/config.js"></script>
 <script src="js/admin.js"></script>
