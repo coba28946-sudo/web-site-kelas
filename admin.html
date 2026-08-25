@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="css/style.css">
 <script>
 (function(){
   var t = localStorage.getItem('theme');
@@ -42,47 +42,18 @@
   <div class="kas-content" id="adminContent">
 
     <div class="admin-banner">
-      ⚠️ <strong>Penting:</strong> ini website statis (GitHub Pages), tidak ada database di server.
-      Perubahan di panel ini hanya tersimpan di <em>browser kamu sekarang</em>. Setelah selesai edit,
-      klik <strong>"Unduh data.js"</strong>, lalu ganti file <code>data.js</code> di repo GitHub kamu
-      dengan file hasil unduhan itu (upload / commit &amp; push) — baru semua orang bisa lihat perubahannya
-      di website.
+      ☁️ Data di panel ini <strong>tersimpan di Google Sheets</strong> yang bisa diakses semua admin dari
+      komputer mana pun. Klik <strong>"Muat Ulang"</strong> buat ambil data terbaru sebelum mulai edit
+      (kalau admin lain baru saja mengubah sesuatu), dan klik <strong>"Simpan ke Google Sheets"</strong>
+      setelah selesai edit supaya semua admin & pengunjung website langsung lihat perubahannya.
     </div>
 
     <div class="admin-msg" id="adminMsg"></div>
     <div class="admin-actions">
-      <button class="btn btn-sm btn-primary" id="btnAutoCommit">🚀 Simpan Otomatis ke GitHub</button>
-      <button class="btn btn-sm btn-outline" id="btnSaveDraft">💾 Simpan Draf di Browser Ini</button>
-      <button class="btn btn-sm btn-outline" id="btnLoadDraft">↩️ Muat Draf Tersimpan</button>
-      <button class="btn btn-sm btn-danger-outline" id="btnReset">🗑️ Reset ke Data Awal</button>
-      <button class="btn btn-sm btn-outline" id="btnDownload">⬇️ Unduh data.js (Manual)</button>
-    </div>
-
-    <button type="button" class="admin-github-toggle" id="btnToggleGhSettings">⚙️ Pengaturan GitHub (buat Auto-Simpan) ▾</button>
-
-    <div class="admin-github-settings" id="ghSettings" style="display:none;">
-      <div class="admin-panel-head">
-        <h3>⚙️ Pengaturan GitHub (buat Auto-Simpan)</h3>
-      </div>
-      <p style="color:var(--muted);font-size:.82rem;margin-bottom:14px;line-height:1.6;">
-        Supaya tombol <strong>"Simpan Otomatis ke GitHub"</strong> bisa langsung update <code>data.js</code> di repo,
-        kamu perlu bikin <strong>GitHub Personal Access Token</strong> sekali, lalu tempel di sini.
-        Token cuma tersimpan <em>di browser ini</em> (tidak dikirim ke server manapun selain langsung ke GitHub).
-      </p>
-      <div class="admin-github-warn">
-        ⚠️ Token ini setara kata sandi ke repo GitHub kamu. Jangan pakai di komputer/HP bersama/umum,
-        dan jangan share ke siapapun. Sebaiknya buat token dengan akses terbatas — cuma ke repo ini,
-        cuma izin "Contents: Read and write", dan kasih masa berlaku (expiry) misalnya 90 hari.
-      </div>
-      <div class="admin-github-row">
-        <div class="admin-token-wrap">
-          <input type="password" class="admin-input" id="ghTokenInput" placeholder="Tempel token di sini (ghp_... atau github_pat_...)">
-          <button type="button" class="admin-token-eye" id="btnToggleToken" title="Lihat/sembunyikan token">👁️</button>
-        </div>
-        <button class="btn btn-sm btn-outline" id="btnSaveToken">Simpan Token</button>
-        <button class="btn btn-sm btn-danger-outline" id="btnClearToken">Hapus Token</button>
-      </div>
-      <p class="admin-github-status" id="ghTokenStatus"></p>
+      <button class="btn btn-sm btn-outline" id="btnReload">🔄 Muat Ulang dari Sheets</button>
+      <button class="btn btn-sm btn-primary" id="btnSaveCloud">☁️ Simpan ke Google Sheets</button>
+      <button class="btn btn-sm btn-outline" id="btnDownload">⬇️ Ekspor data.js (cadangan)</button>
+      <button class="btn btn-sm btn-danger-outline" id="btnReset">🗑️ Batalkan Perubahan</button>
     </div>
 
     <div class="admin-tabs" id="adminTabs">
@@ -90,7 +61,7 @@
       <button class="admin-tab" data-tab="jadwal">🕐 Jadwal Pelajaran</button>
       <button class="admin-tab" data-tab="piket">🧹 Piket</button>
       <button class="admin-tab" data-tab="kas">💰 Kas</button>
-      <button class="admin-tab" data-tab="galeri">🖼️ Galeri</button>
+      <button class="admin-tab" data-tab="galeri">📷 Galeri</button>
     </div>
 
     <!-- PANEL: SISWA -->
@@ -182,18 +153,20 @@
     <div class="admin-panel" id="panel-galeri">
       <div class="admin-panel-head">
         <h3>Galeri Foto</h3>
-        <button class="btn btn-sm btn-outline" id="btnAddGaleri">+ Tambah Foto</button>
       </div>
-      <p style="color:var(--muted);font-size:.82rem;margin-bottom:18px;">
-        Foto otomatis dikompres di browser sebelum disimpan. Kalau belum ada foto diunggah, item akan tampil dengan ikon placeholder.
-      </p>
-      <div id="adminGaleriList"></div>
+      <div class="admin-upload-row">
+        <input type="file" id="galeriFileInput" accept="image/*">
+        <input type="text" class="admin-input" id="galeriCaptionInput" placeholder="Keterangan foto (opsional)" style="max-width:260px;">
+        <button class="btn btn-sm btn-primary" id="btnUploadGaleri">⬆️ Upload Foto</button>
+      </div>
+      <div class="admin-galeri-grid" id="adminGaleriGrid"></div>
     </div>
 
   </div>
 </div>
 
-<script src="data.js"></script>
-<script src="admin.js"></script>
+<script src="js/data.js"></script>
+<script src="js/config.js"></script>
+<script src="js/admin.js"></script>
 </body>
 </html>

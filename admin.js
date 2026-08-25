@@ -12,22 +12,6 @@
   // lalu tempel hasilnya (64 karakter) menggantikan ADMIN_HASH di bawah.
   const ADMIN_HASH = '352df6859167c1a00391a23fc6d535ea4561cd560ca263b976f30548528af074';
 
-  // Konfigurasi auto-commit GitHub (dideklarasikan di atas juga,
-  // supaya tidak error saat auto-unlock manggil initAdmin() lebih dulu).
-  const GH_OWNER = 'coba28946-sudo';
-  const GH_REPO = 'web-site-kelas';
-  const GH_BRANCH = 'main';
-  const GH_PATH = 'data.js';
-  const GH_TOKEN_KEY = 'tjkt1_ghToken';
-
-  // ================= STATE =================
-  // (dideklarasikan di atas supaya tidak error saat auto-unlock
-  // memanggil initAdmin() sebelum baris ini sempat dieksekusi)
-  let data = null;
-  let jadwalDay = 'senin';
-  let piketDay = 'senin';
-  let initialized = false;
-
   const adminForm = document.getElementById('adminForm');
   const adminInput = document.getElementById('adminPassword');
   const adminError = document.getElementById('adminError');
@@ -46,7 +30,12 @@
     initAdmin();
   }
 
-  if (sessionStorage.getItem('adminUnlocked') === '1') unlock();
+  let adminPasswordPlain = '';
+
+  if (sessionStorage.getItem('adminUnlocked') === '1') {
+    adminPasswordPlain = sessionStorage.getItem('adminPasswordPlain') || '';
+    unlock();
+  }
 
   if (adminForm) {
     adminForm.addEventListener('submit', async (e) => {
@@ -56,7 +45,9 @@
       try {
         const hash = await sha256Hex(val);
         if (hash === ADMIN_HASH) {
+          adminPasswordPlain = val;
           sessionStorage.setItem('adminUnlocked', '1');
+          sessionStorage.setItem('adminPasswordPlain', val);
           adminError.textContent = '';
           unlock();
         } else {
@@ -70,11 +61,27 @@
     });
   }
 
-  // ================= INIT =================
+  // ================= STATE =================
+  let data = null;
+  let originalData = null; // snapshot untuk tombol "Batalkan Perubahan"
+  let jadwalDay = 'senin';
+  let piketDay = 'senin';
+  let initialized = false;
+
+  function apiConfigured() {
+    return (typeof API_URL !== 'undefined') && API_URL && !API_URL.includes('TEMPEL_URL');
+  }
+
+  async function fetchFromSheets() {
+    if (!apiConfigured()) return null;
+    const res = await fetch(API_URL);
+    if (!res.ok) throw new Error('Gagal mengambil data dari Google Sheets.');
+    return res.json();
+  }
+
   function initAdmin() {
     if (initialized) return;
     initialized = true;
-    data = loadDraftOrDefault();
     setupMainTabs();
     setupActions();
     setupSiswaHandlers();
@@ -82,20 +89,28 @@
     setupPiketHandlers();
     setupKasHandlers();
     setupGaleriHandlers();
-    setupGithubSettings();
-    renderAll();
+    loadInitialData();
   }
 
-  function loadDraftOrDefault() {
-    let d;
-    try {
-      const draft = localStorage.getItem('tjkt1_siteDataDraft');
-      d = draft ? JSON.parse(draft) : JSON.parse(JSON.stringify(SITE_DATA));
-    } catch (e) {
-      d = JSON.parse(JSON.stringify(SITE_DATA));
+  async function loadInitialData() {
+    if (apiConfigured()) {
+      flashMsg('Memuat data dari Google Sheets...');
+      try {
+        const fresh = await fetchFromSheets();
+        fresh.galeri = fresh.galeri || [];
+        data = fresh;
+        originalData = JSON.parse(JSON.stringify(fresh));
+        renderAll();
+        flashMsg('Data terbaru dari Google Sheets berhasil dimuat.');
+        return;
+      } catch (err) {
+        flashMsg('Gagal ambil data dari Sheets — pakai data cadangan.');
+      }
     }
-    if (!d.galeri) d.galeri = [];
-    return d;
+    data = JSON.parse(JSON.stringify(SITE_DATA));
+    data.galeri = data.galeri || [];
+    originalData = JSON.parse(JSON.stringify(data));
+    renderAll();
   }
 
   function renderAll() {
@@ -120,7 +135,7 @@
     el.textContent = msg;
     el.classList.add('show');
     clearTimeout(flashTimer);
-    flashTimer = setTimeout(() => el.classList.remove('show'), 2200);
+    flashTimer = setTimeout(() => el.classList.remove('show'), 3200);
   }
 
   // ================= TOP ACTIONS =================
@@ -139,22 +154,53 @@
 
   function setupActions() {
     const byId = document.getElementById.bind(document);
-    byId('btnSaveDraft').addEventListener('click', () => {
-      localStorage.setItem('tjkt1_siteDataDraft', JSON.stringify(data));
-      flashMsg('Draf tersimpan di browser ini.');
+
+    byId('btnReload').addEventListener('click', async () => {
+      if (!confirm('Muat ulang dari Google Sheets? Perubahan yang belum disimpan akan hilang.')) return;
+      await loadInitialData();
     });
-    byId('btnLoadDraft').addEventListener('click', () => {
-      data = loadDraftOrDefault();
-      renderAll();
-      flashMsg('Draf berhasil dimuat.');
-    });
+
+    byId('btnSaveCloud').addEventListener('click', saveToSheets);
+
     byId('btnReset').addEventListener('click', () => {
-      if (!confirm('Reset semua perubahan ke data awal (data.js saat ini)? Draf tersimpan tidak akan terhapus.')) return;
-      data = JSON.parse(JSON.stringify(SITE_DATA));
+      if (!confirm('Batalkan semua perubahan yang belum disimpan?')) return;
+      data = JSON.parse(JSON.stringify(originalData));
       renderAll();
-      flashMsg('Direset ke data awal.');
+      flashMsg('Perubahan dibatalkan.');
     });
+
     byId('btnDownload').addEventListener('click', downloadDataJs);
+  }
+
+  async function saveToSheets() {
+    if (!apiConfigured()) {
+      flashMsg('URL Google Sheets belum di-setup (lihat js/config.js).');
+      return;
+    }
+    flashMsg('Menyimpan ke Google Sheets...');
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // hindari CORS preflight Apps Script
+        body: JSON.stringify({
+          key: adminPasswordPlain,
+          siswa: data.siswa,
+          jadwal: data.jadwal,
+          piket: data.piket,
+          kas: data.kas,
+          galeri: data.galeri
+        })
+      });
+      const json = await res.json();
+      if (json.success) {
+        originalData = JSON.parse(JSON.stringify(data));
+        flashMsg('Tersimpan ke Google Sheets — semua admin & pengunjung langsung lihat perubahan ini.');
+      } else {
+        flashMsg('Gagal menyimpan: ' + (json.message || 'sandi ditolak server.'));
+      }
+    } catch (err) {
+      flashMsg('Gagal menyimpan — cek koneksi internet atau URL di js/config.js.');
+    }
   }
 
   function downloadDataJs() {
@@ -384,228 +430,86 @@
   }
 
   // ================= GALERI =================
-  // Gambar dikompres di browser (resize + JPEG) lalu disimpan sebagai
-  // base64 langsung di dalam data.js, supaya tetap 1 file tanpa server.
-  function compressImage(file, maxDim = 1400, quality = 0.82) {
+  function renderGaleriAdmin() {
+    const grid = document.getElementById('adminGaleriGrid');
+    if (!grid) return;
+    const list = data.galeri || [];
+    grid.innerHTML = list.map((g, i) => `
+      <div class="admin-galeri-item">
+        <img src="${g.url}" alt="foto ${i + 1}">
+        <div class="admin-galeri-body">
+          <input type="text" class="admin-input" data-field="caption" data-idx="${i}" value="${escAttr(g.caption)}" placeholder="Keterangan foto">
+          <button class="btn-icon-danger" data-action="del-galeri" data-idx="${i}">✕ Hapus</button>
+        </div>
+      </div>`).join('') || `<p style="color:var(--muted);font-size:.85rem;">Belum ada foto diunggah.</p>`;
+
+    grid.querySelectorAll('input[data-field="caption"]').forEach(el => {
+      el.addEventListener('input', () => { list[Number(el.dataset.idx)].caption = el.value; });
+    });
+    grid.querySelectorAll('[data-action="del-galeri"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        list.splice(Number(btn.dataset.idx), 1);
+        renderGaleriAdmin();
+      });
+    });
+  }
+
+  function fileToBase64(file) {
     return new Promise((resolve, reject) => {
-      if (!file.type.startsWith('image/')) { reject(new Error('Bukan file gambar')); return; }
       const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          let { width, height } = img;
-          if (width > maxDim || height > maxDim) {
-            if (width > height) { height = Math.round(height * maxDim / width); width = maxDim; }
-            else { width = Math.round(width * maxDim / height); height = maxDim; }
-          }
-          const canvas = document.createElement('canvas');
-          canvas.width = width; canvas.height = height;
-          canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL('image/jpeg', quality));
-        };
-        img.onerror = () => reject(new Error('Gagal membaca gambar'));
-        img.src = e.target.result;
+      reader.onload = () => {
+        const result = reader.result; // data:<mime>;base64,XXXX
+        const base64 = result.split(',')[1];
+        resolve(base64);
       };
-      reader.onerror = () => reject(new Error('Gagal membaca file'));
+      reader.onerror = reject;
       reader.readAsDataURL(file);
     });
   }
 
-  function renderGaleriAdmin() {
-    const wrap = document.getElementById('adminGaleriList');
-    if (!wrap) return;
-    if (!data.galeri) data.galeri = [];
-
-    wrap.innerHTML = data.galeri.map((g, i) => `
-      <div class="galeri-admin-item">
-        <div class="galeri-admin-thumb"${g.image ? ` style="background-image:url('${g.image}')"` : ''}>${g.image ? '' : (g.icon || '📷')}</div>
-        <div class="galeri-admin-fields">
-          <div class="galeri-admin-row">
-            <input type="text" class="admin-input" data-field="label" data-idx="${i}" value="${escAttr(g.label)}" placeholder="Judul foto" style="max-width:260px;">
-            <select class="admin-input admin-input-sm" data-field="size" data-idx="${i}" style="max-width:150px;">
-              <option value="normal"${(!g.size || g.size === 'normal') ? ' selected' : ''}>Ukuran normal</option>
-              <option value="wide"${g.size === 'wide' ? ' selected' : ''}>Lebar</option>
-              <option value="tall"${g.size === 'tall' ? ' selected' : ''}>Tinggi</option>
-              <option value="wide-tall"${g.size === 'wide-tall' ? ' selected' : ''}>Lebar &amp; Tinggi</option>
-            </select>
-          </div>
-          <div class="galeri-admin-row">
-            <input type="file" accept="image/*" class="galeri-admin-file" data-action="upload-galeri" data-idx="${i}">
-            ${g.image ? `<button type="button" class="btn btn-sm btn-outline" data-action="remove-image" data-idx="${i}">Hapus Foto</button>` : ''}
-            <button type="button" class="btn-icon-danger" data-action="del-galeri" data-idx="${i}" title="Hapus item galeri">✕</button>
-          </div>
-        </div>
-      </div>`).join('') || `<p style="color:var(--muted);font-size:.85rem;">Belum ada item galeri. Klik "+ Tambah Foto".</p>`;
-
-    wrap.querySelectorAll('input[data-field], select[data-field]').forEach(el => {
-      el.addEventListener('input', () => {
-        const idx = Number(el.dataset.idx);
-        data.galeri[idx][el.dataset.field] = el.value;
-      });
-    });
-
-    wrap.querySelectorAll('[data-action="upload-galeri"]').forEach(el => {
-      el.addEventListener('change', async () => {
-        const idx = Number(el.dataset.idx);
-        const file = el.files && el.files[0];
-        if (!file) return;
-        flashMsg('Memproses gambar...');
-        try {
-          const base64 = await compressImage(file);
-          data.galeri[idx].image = base64;
-          renderGaleriAdmin();
-          flashMsg('Foto berhasil diunggah. Jangan lupa unduh data.js setelah selesai.');
-        } catch (err) {
-          flashMsg('Gagal memproses gambar, coba file lain.');
-        }
-      });
-    });
-
-    wrap.querySelectorAll('[data-action="remove-image"]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        data.galeri[Number(btn.dataset.idx)].image = '';
-        renderGaleriAdmin();
-      });
-    });
-
-    wrap.querySelectorAll('[data-action="del-galeri"]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (!confirm('Hapus foto ini dari galeri?')) return;
-        data.galeri.splice(Number(btn.dataset.idx), 1);
-        renderGaleriAdmin();
-      });
-    });
-  }
-
   function setupGaleriHandlers() {
-    document.getElementById('btnAddGaleri').addEventListener('click', () => {
-      if (!data.galeri) data.galeri = [];
-      data.galeri.push({ label: 'Foto Baru', icon: '📷', size: 'normal', image: '' });
-      renderGaleriAdmin();
-    });
-  }
+    const btn = document.getElementById('btnUploadGaleri');
+    const fileInput = document.getElementById('galeriFileInput');
+    const captionInput = document.getElementById('galeriCaptionInput');
+    if (!btn) return;
 
-  // ================= AUTO-COMMIT KE GITHUB =================
-  function getGhToken() {
-    return localStorage.getItem(GH_TOKEN_KEY) || '';
-  }
+    btn.addEventListener('click', async () => {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) { flashMsg('Pilih file foto dulu.'); return; }
+      if (!apiConfigured()) { flashMsg('URL Google Sheets belum di-setup (lihat js/config.js).'); return; }
+      if (file.size > 5 * 1024 * 1024) { flashMsg('Ukuran foto maksimal 5MB.'); return; }
 
-  function utf8ToBase64(str) {
-    return btoa(unescape(encodeURIComponent(str)));
-  }
-
-  function buildDataJsContent() {
-    const json = JSON.stringify(data, null, 2);
-    return '// ============================================================\n' +
-      '// SITE_DATA — sumber data tunggal untuk semua halaman website\n' +
-      '// (siswa, jadwal, piket, kas, galeri). Diedit lewat admin.html.\n' +
-      '// ============================================================\n' +
-      'const SITE_DATA = ' + json + ';\n';
-  }
-
-  async function saveToGithub() {
-    const token = getGhToken();
-    if (!token) {
-      flashMsg('Belum ada token GitHub. Isi dulu di bagian "Pengaturan GitHub" di bawah.');
-      return;
-    }
-    const btn = document.getElementById('btnAutoCommit');
-    const originalLabel = btn ? btn.textContent : '';
-    if (btn) { btn.disabled = true; btn.textContent = '⏳ Menyimpan ke GitHub...'; }
-
-    try {
-      const apiUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`;
-
-      // 1. Ambil SHA file saat ini (wajib buat update lewat GitHub API)
-      const getRes = await fetch(`${apiUrl}?ref=${GH_BRANCH}`, {
-        headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' }
-      });
-      if (!getRes.ok) {
-        if (getRes.status === 401) throw new Error('Token salah atau sudah kadaluarsa.');
-        if (getRes.status === 404) throw new Error('File data.js tidak ditemukan di repo/branch itu.');
-        throw new Error('Gagal membaca data repo (status ' + getRes.status + ').');
-      }
-      const fileInfo = await getRes.json();
-
-      // 2. Timpa file dengan isi data terbaru
-      const putRes = await fetch(apiUrl, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/vnd.github+json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: 'Update data.js lewat admin panel — ' + new Date().toLocaleString('id-ID'),
-          content: utf8ToBase64(buildDataJsContent()),
-          sha: fileInfo.sha,
-          branch: GH_BRANCH
-        })
-      });
-      if (!putRes.ok) {
-        const errBody = await putRes.json().catch(() => ({}));
-        if (putRes.status === 401) throw new Error('Token salah, kadaluarsa, atau tidak punya izin tulis ke repo.');
-        if (putRes.status === 409) throw new Error('Ada perubahan lain barusan di repo, coba klik simpan sekali lagi.');
-        if (putRes.status === 422 && /too large|size/i.test(errBody.message || '')) {
-          throw new Error('Ukuran data.js kelewat besar (mungkin kebanyakan foto galeri). Kompres/kurangi foto lalu coba lagi.');
+      btn.disabled = true;
+      flashMsg('Mengunggah foto...');
+      try {
+        const base64 = await fileToBase64(file);
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            key: adminPasswordPlain,
+            action: 'uploadImage',
+            fileName: file.name,
+            mimeType: file.type,
+            imageBase64: base64
+          })
+        });
+        const json = await res.json();
+        if (json.success) {
+          data.galeri = data.galeri || [];
+          data.galeri.push({ url: json.url, caption: captionInput.value.trim() });
+          renderGaleriAdmin();
+          fileInput.value = '';
+          captionInput.value = '';
+          flashMsg('Foto diunggah. Klik "☁️ Simpan ke Google Sheets" biar tersimpan permanen.');
+        } else {
+          flashMsg('Gagal unggah: ' + (json.message || 'terjadi kesalahan.'));
         }
-        throw new Error(errBody.message || ('Gagal menyimpan (status ' + putRes.status + ').'));
+      } catch (err) {
+        flashMsg('Gagal unggah — cek koneksi internet.');
+      } finally {
+        btn.disabled = false;
       }
-
-      flashMsg('✅ Tersimpan ke GitHub! Tunggu 1-2 menit lalu refresh website.');
-    } catch (err) {
-      flashMsg('❌ Gagal: ' + err.message);
-      alert('Gagal auto-simpan ke GitHub:\n\n' + err.message);
-    } finally {
-      if (btn) { btn.disabled = false; btn.textContent = originalLabel; }
-    }
-  }
-
-  function setupGithubSettings() {
-    const tokenInput = document.getElementById('ghTokenInput');
-    const saveTokenBtn = document.getElementById('btnSaveToken');
-    const clearTokenBtn = document.getElementById('btnClearToken');
-    const statusEl = document.getElementById('ghTokenStatus');
-    const autoBtn = document.getElementById('btnAutoCommit');
-    const toggleBtn = document.getElementById('btnToggleGhSettings');
-    const panel = document.getElementById('ghSettings');
-
-    if (toggleBtn && panel) {
-      toggleBtn.addEventListener('click', () => {
-        const isOpen = panel.style.display !== 'none';
-        panel.style.display = isOpen ? 'none' : 'block';
-        toggleBtn.classList.toggle('open', !isOpen);
-        toggleBtn.textContent = '⚙️ Pengaturan GitHub (buat Auto-Simpan) ' + (isOpen ? '▾' : '▴');
-      });
-    }
-
-    function refreshStatus() {
-      if (!statusEl) return;
-      statusEl.textContent = getGhToken()
-        ? '✅ Token tersimpan di browser ini — tombol "Simpan Otomatis" siap dipakai.'
-        : '⚠️ Belum ada token tersimpan. Tombol "Simpan Otomatis" belum bisa dipakai.';
-    }
-    refreshStatus();
-
-    if (saveTokenBtn) {
-      saveTokenBtn.addEventListener('click', () => {
-        const val = tokenInput.value.trim();
-        if (!val) { flashMsg('Isi token dulu sebelum disimpan.'); return; }
-        localStorage.setItem(GH_TOKEN_KEY, val);
-        tokenInput.value = '';
-        refreshStatus();
-        flashMsg('Token disimpan di browser ini.');
-        alert('✅ Token berhasil disimpan!\n\nTombol "Simpan Otomatis ke GitHub" sekarang sudah bisa dipakai di browser ini.');
-      });
-    }
-    if (clearTokenBtn) {
-      clearTokenBtn.addEventListener('click', () => {
-        if (!confirm('Hapus token GitHub yang tersimpan di browser ini?')) return;
-        localStorage.removeItem(GH_TOKEN_KEY);
-        refreshStatus();
-        flashMsg('Token dihapus.');
-      });
-    }
-    if (autoBtn) autoBtn.addEventListener('click', saveToGithub);
+    });
   }
 })();

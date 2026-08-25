@@ -320,43 +320,68 @@ function renderKasFromData() {
 }
 
 function renderGaleriFromData() {
-  const wrap = document.getElementById('galeriGrid');
-  if (!wrap || typeof SITE_DATA === 'undefined') return;
-  const items = SITE_DATA.galeri || [];
-  wrap.innerHTML = items.map(it => {
-    const sizeClass =
-      it.size === 'wide' ? ' wide' :
-      it.size === 'tall' ? ' tall' :
-      it.size === 'wide-tall' ? ' wide tall' : '';
-    const bgStyle = it.image ? ` style="background-image:url('${it.image}');background-size:cover;background-position:center;"` : '';
-    const placeholder = it.image ? '' : `
-        <div class="galeri-placeholder"><span class="icon">${it.icon || '📷'}</span><span class="label">${it.label || ''}</span></div>`;
-    return `
-      <div class="galeri-item${sizeClass} fade-up"${bgStyle}>${placeholder}
-        <div class="galeri-overlay"><span>${it.label || ''}</span></div>
-      </div>`;
-  }).join('') || `<p style="color:var(--muted);">Belum ada foto di galeri.</p>`;
-  wrap.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  const grid = document.getElementById('galeriGrid');
+  if (!grid || typeof SITE_DATA === 'undefined') return;
+  const list = SITE_DATA.galeri || [];
+  if (!list.length) return; // biarkan kartu placeholder bawaan tetap tampil
+  grid.innerHTML = list.map((g, i) => `
+    <div class="galeri-item has-photo fade-up${i === 0 ? ' wide tall' : ''}">
+      <img src="${g.url}" alt="${(g.caption || 'Foto kelas').replace(/"/g, '&quot;')}" loading="lazy">
+      <div class="galeri-overlay"><span>${g.caption || ''}</span></div>
+    </div>`).join('');
+  grid.querySelectorAll('.fade-up').forEach(el => el.classList.add('visible'));
 }
 
-if (typeof SITE_DATA !== 'undefined') {
-  renderSiswaFromData();
-  renderJadwalFromData();
-  renderPiketFromData();
-  renderKasFromData();
-  renderGaleriFromData();
+// ===== MUAT DATA (Google Sheets via API, fallback ke js/data.js) =====
+function loadSiteDataAndRender() {
+  const hasContainer = document.getElementById('siswaBody')
+    || document.getElementById('jadwalWrap')
+    || document.getElementById('piketWrap')
+    || document.getElementById('kasSummary')
+    || document.getElementById('kasBody')
+    || document.getElementById('galeriGrid');
+  if (!hasContainer) return;
+
+  const fallback = (typeof SITE_DATA !== 'undefined') ? SITE_DATA : null;
+
+  function renderWith(dataObj) {
+    window.SITE_DATA = dataObj;
+    renderSiswaFromData();
+    renderJadwalFromData();
+    renderPiketFromData();
+    renderKasFromData();
+    renderGaleriFromData();
+    initDayTabs();
+  }
+
+  const apiConfigured = (typeof API_URL !== 'undefined') && API_URL && !API_URL.includes('TEMPEL_URL');
+
+  if (!apiConfigured) {
+    if (fallback) renderWith(fallback);
+    return;
+  }
+
+  fetch(API_URL)
+    .then(r => r.json())
+    .then(json => renderWith(json))
+    .catch(() => {
+      if (fallback) renderWith(fallback);
+    });
 }
 
-// ===== JADWAL PELAJARAN (day tabs) =====
-const dayTabs = document.getElementById('dayTabs');
-if (dayTabs) {
+loadSiteDataAndRender();
+
+// ===== JADWAL PELAJARAN (day tabs) — dipanggil ulang tiap konten baru dirender =====
+function initDayTabs() {
+  const dayTabs = document.getElementById('dayTabs');
+  if (!dayTabs) return;
   const tabs = dayTabs.querySelectorAll('.day-tab');
   const days = document.querySelectorAll('.schedule-day');
   tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
+    tab.onclick = () => {
       const day = tab.dataset.day;
       tabs.forEach(t => t.classList.toggle('active', t === tab));
       days.forEach(d => d.classList.toggle('active', d.dataset.day === day));
-    });
+    };
   });
 }
