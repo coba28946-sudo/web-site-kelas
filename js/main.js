@@ -319,10 +319,10 @@ function renderKasFromData() {
   }
 }
 
-function renderGaleriFromData() {
+function renderGaleriFromData(list) {
   const grid = document.getElementById('galeriGrid');
-  if (!grid || typeof SITE_DATA === 'undefined') return;
-  const list = SITE_DATA.galeri || [];
+  if (!grid) return;
+  list = list || [];
   if (!list.length) return; // biarkan kartu placeholder bawaan tetap tampil
   grid.innerHTML = list.map((g, i) => `
     <div class="galeri-item has-photo fade-up${i === 0 ? ' wide tall' : ''}">
@@ -350,7 +350,6 @@ function loadSiteDataAndRender() {
     renderJadwalFromData();
     renderPiketFromData();
     renderKasFromData();
-    renderGaleriFromData();
     initDayTabs();
   }
 
@@ -359,27 +358,49 @@ function loadSiteDataAndRender() {
 
   if (!firebaseConfigured || typeof firebase === 'undefined') {
     if (fallback) renderWith(fallback);
+    if (fallback) renderGaleriFromData(fallback.galeri);
     return;
   }
 
+  let db = null;
   try {
     if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
-    const db = firebase.firestore();
-    // onSnapshot = listener real-time: tiap ada perubahan di Firestore
-    // (misal admin lain baru saja Simpan), halaman ini otomatis update
-    // sendiri tanpa perlu di-refresh.
+    db = firebase.firestore();
+  } catch (err) {
+    if (fallback) { renderWith(fallback); renderGaleriFromData(fallback.galeri); }
+    return;
+  }
+
+  // onSnapshot = listener real-time: tiap ada perubahan di Firestore
+  // (misal admin lain baru saja Simpan), halaman ini otomatis update
+  // sendiri tanpa perlu di-refresh.
+  try {
     db.collection('site').doc('data').onSnapshot(
       (doc) => {
-        if (doc.exists) {
-          renderWith(doc.data());
-        } else if (fallback) {
-          renderWith(fallback);
-        }
+        if (doc.exists) renderWith(doc.data());
+        else if (fallback) renderWith(fallback);
       },
       () => { if (fallback) renderWith(fallback); }
     );
   } catch (err) {
     if (fallback) renderWith(fallback);
+  }
+
+  // Foto galeri disimpan di collection terpisah ("galeri"), jadi
+  // listener-nya juga terpisah dari data siswa/jadwal/piket/kas.
+  const galeriGrid = document.getElementById('galeriGrid');
+  if (galeriGrid) {
+    try {
+      db.collection('galeri').orderBy('createdAt', 'desc').onSnapshot(
+        (snap) => {
+          const list = snap.docs.map(doc => ({ url: doc.data().data, caption: doc.data().caption || '' }));
+          renderGaleriFromData(list);
+        },
+        () => { if (fallback) renderGaleriFromData(fallback.galeri); }
+      );
+    } catch (err) {
+      if (fallback) renderGaleriFromData(fallback.galeri);
+    }
   }
 }
 

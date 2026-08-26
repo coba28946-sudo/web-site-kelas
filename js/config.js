@@ -4,10 +4,10 @@
 // Lihat PANDUAN-SETUP.md untuk langkah lengkap.
 // ============================================================
 const FIREBASE_CONFIG = {
-  apiKey: "TEMPEL_API_KEY_DI_SINI",
-  authDomain: "TEMPEL_AUTH_DOMAIN_DI_SINI",
-  projectId: "TEMPEL_PROJECT_ID_DI_SINI",
-  storageBucket: "TEMPEL_STORAGE_BUCKET_DI_SINI",
-  messagingSenderId: "TEMPEL_SENDER_ID_DI_SINI",
-  appId: "TEMPEL_APP_ID_DI_SINI"
+  apiKey: "AIzaSyBkyIvevfI_QrtHn8I3hWR803P5SWq4NsM",
+  authDomain: "tjkt1-web.firebaseapp.com",
+  projectId: "tjkt1-web",
+  storageBucket: "tjkt1-web.firebasestorage.app",
+  messagingSenderId: "478556173954",
+  appId: "1:478556173954:web:7e2498c1a0491fc606669b"
 };

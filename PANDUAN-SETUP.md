@@ -1,7 +1,7 @@
 # Panduan Setup — Firebase (Real-time, buat 5 Admin)
 
-Lebih simpel dari cara Google Sheets sebelumnya — gak ada nama tab/kolom yang
-harus persis, dan perubahan langsung real-time ke semua orang tanpa refresh.
+Gratis penuh — gak butuh upgrade akun/kartu kredit sama sekali (termasuk buat
+foto galeri, yang disimpan langsung di Firestore, bukan Firebase Storage).
 
 Ikuti urutan ini sekali aja di awal.
 
@@ -50,13 +50,14 @@ Ikuti urutan ini sekali aja di awal.
 
 ---
 
-## 3. Aktifkan Firestore Database (tempat nyimpen data)
+## 3. Aktifkan Firestore Database (tempat nyimpen semua data, termasuk foto)
 
-1. Di sidebar kiri, klik **Build → Firestore Database**.
+1. Di sidebar kiri, klik **Databases & Storage → Firestore**.
 2. Klik **Create database**.
-3. Pilih lokasi server terdekat (misal `asia-southeast2 (Jakarta)`) → Next.
-4. Pilih **Start in production mode** → Enable.
-5. Setelah kebuka, klik tab **Rules** di bagian atas, hapus semua isinya, ganti dengan:
+3. Pilih **Standard edition** → Next.
+4. Pilih lokasi server terdekat (misal `asia-southeast2 (Jakarta)`, atau `asia-southeast1 (Singapore)` kalau gak ada) → Next.
+5. Pilih **Start in production mode** → Create.
+6. Setelah kebuka, klik tab **Rules** di bagian atas, hapus semua isinya, ganti dengan:
    ```
    rules_version = '2';
    service cloud.firestore {
@@ -65,20 +66,24 @@ Ikuti urutan ini sekali aja di awal.
          allow read: if true;
          allow write: if request.auth != null;
        }
+       match /galeri/{docId} {
+         allow read: if true;
+         allow write: if request.auth != null;
+       }
      }
    }
    ```
-6. Klik **Publish**.
+7. Klik **Publish**.
 
-*(Artinya: semua orang boleh baca datanya buat ditampilkan di website, tapi cuma yang sudah login admin yang boleh mengubah.)*
+*(Artinya: semua orang boleh baca datanya buat ditampilkan di website, tapi cuma yang sudah login admin yang boleh mengubah — berlaku juga buat foto galeri, yang disimpan sebagai dokumen terpisah di collection `galeri`.)*
 
 ---
 
 ## 4. Aktifkan Authentication (buat login admin)
 
-1. Di sidebar kiri, klik **Build → Authentication**.
+1. Di sidebar kiri, klik **Authentication**.
 2. Klik **Get started**.
-3. Di tab **Sign-in method**, klik **Email/Password**, aktifkan toggle-nya → **Save**.
+3. Di tab **Sign-in method**, klik **Email/Password**, aktifkan toggle-nya (matikan toggle "Email link (passwordless sign-in)" kalau ikut nyala) → **Save**.
 4. Pindah ke tab **Users**, klik **Add user**.
 5. Isi:
    - **Email**: `admin@tjkt1-web.local` *(pakai persis ini — atau kalau mau ganti, sesuaikan juga `ADMIN_EMAIL` di `js/admin.js`)*
@@ -87,29 +92,11 @@ Ikuti urutan ini sekali aja di awal.
 
 💡 **Kalau mau 5 admin punya sandi masing-masing** (bukan sandi bareng-bareng): ulangi langkah 4-6 dengan email berbeda per admin (misal `admin1@tjkt1-web.local`, `admin2@tjkt1-web.local`, dst), lalu di `js/admin.js` kamu perlu ubah dikit logikanya biar bisa pilih email — bisa tanya saya lagi kalau mau versi ini.
 
----
-
-## 5. Aktifkan Storage (tempat nyimpen foto galeri)
-
-1. Di sidebar kiri, klik **Build → Storage**.
-2. Klik **Get started** → **Next** → pilih lokasi yang **sama** kayak Firestore tadi → **Done**.
-3. Klik tab **Rules**, ganti isinya jadi:
-   ```
-   rules_version = '2';
-   service firebase.storage {
-     match /b/{bucket}/o {
-       match /galeri/{fileName} {
-         allow read: if true;
-         allow write: if request.auth != null;
-       }
-     }
-   }
-   ```
-4. Klik **Publish**.
+**Tidak perlu setup Firebase Storage** — foto galeri disimpan langsung di Firestore (langkah 3), jadi cukup 3 layanan Firebase yang diaktifkan: Firestore, Authentication. (Storage dilewati sepenuhnya, gak perlu upgrade paket berbayar.)
 
 ---
 
-## 6. Upload ke GitHub
+## 5. Upload ke GitHub
 
 Upload semua file website (`*.html`, folder `css/`, folder `js/` — termasuk `js/config.js`
 yang udah diisi tadi — dan `assets/`) ke repo GitHub kamu, replace yang lama, commit & push.
@@ -123,11 +110,16 @@ yang udah diisi tadi — dan `assets/`) ke repo GitHub kamu, replace yang lama, 
   perubahan — pengunjung gak perlu refresh.
 - **`admin.html`**: buka, masukin sandi (yang kamu buat di langkah 4.5) → edit data di 5 tab
   (Siswa, Jadwal, Piket, Kas, Galeri) → klik **☁️ Simpan (Real-time)**.
+  Khusus tab **Galeri**: foto tersimpan otomatis begitu diunggah (gak perlu klik Simpan lagi) —
+  foto otomatis dikompres dulu sebelum disimpan supaya tetap ringan.
 
 ---
 
 ## Troubleshooting
 
+- **Tombol "Masuk" di admin.html gak ngapa-ngapain sama sekali**: buka Console browser (tekan F12 →
+  tab Console), lihat ada tulisan error warna merah atau enggak, biasanya nunjukin bagian mana yang
+  bermasalah. Kirim screenshot error itu kalau butuh bantuan lebih lanjut.
 - **"Sandi salah" padahal yakin bener**: cek lagi email di Firebase Console → Authentication → Users,
   pastikan persis `admin@tjkt1-web.local` (atau email yang kamu pakai, harus sama dengan `ADMIN_EMAIL`
   di `js/admin.js`).
@@ -135,7 +127,11 @@ yang udah diisi tadi — dan `assets/`) ke repo GitHub kamu, replace yang lama, 
   `TEMPEL_...` lagi).
 - **"Firebase belum di-setup" terus muncul**: berarti `js/config.js` masih placeholder atau ada typo —
   cek ulang tiap field-nya persis sama seperti yang di-copy dari Firebase Console.
-- **Gagal menyimpan / gagal upload foto**: kemungkinan Rules di langkah 3.5 atau 5.3 belum ke-**Publish**,
+- **Gagal menyimpan / gagal upload foto**: kemungkinan Rules di langkah 3.6 belum ke-**Publish**,
   atau kamu belum login (coba logout & login ulang di admin.html).
-- **Upload foto lama/gagal buat file besar**: maksimal 5MB per foto, ukuran lebih besar dari itu ditolak
-  duluan sama admin panel.
+- **Upload foto gagal buat file besar**: foto di atas 15MB ditolak duluan sebelum diproses. Foto yang
+  diterima otomatis dikompres; kalau hasil kompresnya masih kegedean (jarang terjadi), coba foto lain
+  yang resolusi awalnya lebih kecil.
+- **Halaman admin.html tampilannya polos/gak ada gaya (CSS gak jalan)**: cek struktur folder di repo
+  GitHub kamu — pastikan ada folder `css/` berisi `style.css` dan folder `js/` berisi `admin.js`,
+  `config.js`, `data.js`, `main.js` — bukan file-file itu numpuk semua di root/folder utama.

@@ -1,7 +1,8 @@
 // ============================================================
 // ADMIN PANEL — logika edit data (siswa, jadwal, piket, kas, galeri)
-// Login pakai Firebase Authentication, data disimpan real-time di
-// Firebase Firestore, foto disimpan di Firebase Storage.
+// Login pakai Firebase Authentication, semua data (termasuk foto
+// galeri, dikompres & disimpan sebagai base64) tersimpan real-time
+// di Firebase Firestore. Gak butuh Firebase Storage sama sekali.
 // ============================================================
 (function () {
   // Email akun admin di Firebase Authentication (dibuat sekali lewat
@@ -24,13 +25,15 @@
 
   let auth = null;
   let db = null;
-  let storage = null;
 
+  // Dibungkus try/catch masing-masing supaya kalau salah satu servis
+  // gagal ke-init, servis lain (terutama Auth buat login) tetap jalan.
   if (firebaseConfigured() && typeof firebase !== 'undefined') {
-    if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
-    auth = firebase.auth();
-    db = firebase.firestore();
-    storage = firebase.storage();
+    try {
+      if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    } catch (err) { /* app mungkin udah di-init sebelumnya, aman diabaikan */ }
+    try { auth = firebase.auth(); } catch (err) { auth = null; }
+    try { db = firebase.firestore(); } catch (err) { db = null; }
   }
 
   function unlock() {
@@ -98,6 +101,7 @@
     setupKasHandlers();
     setupGaleriHandlers();
     loadInitialData();
+    loadGaleriAdmin();
   }
 
   async function fetchFromFirestore() {
@@ -112,7 +116,6 @@
       try {
         const fresh = await fetchFromFirestore();
         if (fresh) {
-          fresh.galeri = fresh.galeri || [];
           data = fresh;
           originalData = JSON.parse(JSON.stringify(fresh));
           renderAll();
@@ -125,7 +128,6 @@
       }
     }
     data = JSON.parse(JSON.stringify(SITE_DATA));
-    data.galeri = data.galeri || [];
     originalData = JSON.parse(JSON.stringify(data));
     renderAll();
   }
@@ -135,7 +137,6 @@
     renderJadwalAdmin();
     renderPiketAdmin();
     renderKasAdmin();
-    renderGaleriAdmin();
   }
 
   function formatRp(n) { return 'Rp ' + (Number(n) || 0).toLocaleString('id-ID'); }
@@ -200,8 +201,7 @@
         siswa: data.siswa,
         jadwal: data.jadwal,
         piket: data.piket,
-        kas: data.kas,
-        galeri: data.galeri
+        kas: data.kas
       });
       originalData = JSON.parse(JSON.stringify(data));
       flashMsg('Tersimpan — semua admin & pengunjung langsung lihat perubahan ini secara real-time.');
@@ -436,27 +436,82 @@
   }
 
   // ================= GALERI =================
+  // Foto disimpan di collection Firestore terpisah ("galeri"), bukan
+  // di dalam dokumen site/data — supaya gak kebentur batas ukuran
+  // dokumen Firestore (1MB). Tiap foto dikompres dulu jadi base64
+  // sebelum disimpan, jadi gak butuh Firebase Storage sama sekali.
+  let galeriList = []; // [{ id, url, caption }]
+
+  async function loadGaleriAdmin() {
+    if (!db) { galeriList = []; renderGaleriAdmin(); return; }
+    try {
+      const snap = await db.collection('galeri').orderBy('createdAt', 'desc').get();
+      galeriList = snap.docs.map(doc => ({ id: doc.id, url: doc.data().data, caption: doc.data().caption || '' }));
+    } catch (err) {
+      galeriList = [];
+    }
+    renderGaleriAdmin();
+  }
+
   function renderGaleriAdmin() {
     const grid = document.getElementById('adminGaleriGrid');
     if (!grid) return;
-    const list = data.galeri || [];
-    grid.innerHTML = list.map((g, i) => `
+    grid.innerHTML = galeriList.map((g, i) => `
       <div class="admin-galeri-item">
         <img src="${g.url}" alt="foto ${i + 1}">
         <div class="admin-galeri-body">
-          <input type="text" class="admin-input" data-field="caption" data-idx="${i}" value="${escAttr(g.caption)}" placeholder="Keterangan foto">
-          <button class="btn-icon-danger" data-action="del-galeri" data-idx="${i}">✕ Hapus</button>
+          <input type="text" class="admin-input" data-field="caption" data-id="${g.id}" value="${escAttr(g.caption)}" placeholder="Keterangan foto">
+          <button class="btn-icon-danger" data-action="del-galeri" data-id="${g.id}">✕ Hapus</button>
         </div>
       </div>`).join('') || `<p style="color:var(--muted);font-size:.85rem;">Belum ada foto diunggah.</p>`;
 
     grid.querySelectorAll('input[data-field="caption"]').forEach(el => {
-      el.addEventListener('input', () => { list[Number(el.dataset.idx)].caption = el.value; });
+      el.addEventListener('change', async () => {
+        const id = el.dataset.id;
+        const item = galeriList.find(g => g.id === id);
+        if (item) item.caption = el.value;
+        if (db) {
+          try { await db.collection('galeri').doc(id).update({ caption: el.value }); flashMsg('Keterangan foto disimpan.'); }
+          catch (err) { flashMsg('Gagal simpan keterangan.'); }
+        }
+      });
     });
     grid.querySelectorAll('[data-action="del-galeri"]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        list.splice(Number(btn.dataset.idx), 1);
+      btn.addEventListener('click', async () => {
+        if (!confirm('Hapus foto ini?')) return;
+        const id = btn.dataset.id;
+        if (db) {
+          try { await db.collection('galeri').doc(id).delete(); }
+          catch (err) { flashMsg('Gagal hapus foto.'); return; }
+        }
+        galeriList = galeriList.filter(g => g.id !== id);
         renderGaleriAdmin();
+        flashMsg('Foto dihapus.');
       });
+    });
+  }
+
+  // Kecilin & kompres foto lewat <canvas> sebelum disimpan sebagai
+  // base64, supaya ukurannya muat jauh di bawah batas 1MB Firestore.
+  function resizeImageToBase64(file, maxWidth, quality) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let w = img.width, h = img.height;
+          if (w > maxWidth) { h = Math.round(h * (maxWidth / w)); w = maxWidth; }
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = () => reject(new Error('Gagal membaca gambar.'));
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
     });
   }
 
@@ -469,25 +524,34 @@
     btn.addEventListener('click', async () => {
       const file = fileInput.files && fileInput.files[0];
       if (!file) { flashMsg('Pilih file foto dulu.'); return; }
-      if (!storage) { flashMsg('Firebase belum di-setup (lihat js/config.js).'); return; }
-      if (file.size > 5 * 1024 * 1024) { flashMsg('Ukuran foto maksimal 5MB.'); return; }
+      if (!db) { flashMsg('Firebase belum di-setup (lihat js/config.js).'); return; }
+      if (file.size > 15 * 1024 * 1024) { flashMsg('Ukuran foto maksimal 15MB (sebelum dikompres).'); return; }
 
       btn.disabled = true;
-      flashMsg('Mengunggah foto...');
+      flashMsg('Mengompres & mengunggah foto...');
       try {
-        const path = 'galeri/' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-        const ref = storage.ref(path);
-        await ref.put(file);
-        const url = await ref.getDownloadURL();
+        let base64 = await resizeImageToBase64(file, 1000, 0.7);
+        // Kalau masih kegedean, kompres ulang lebih agresif.
+        if (base64.length * 0.75 > 900000) {
+          base64 = await resizeImageToBase64(file, 700, 0.55);
+        }
+        if (base64.length * 0.75 > 950000) {
+          flashMsg('Foto masih terlalu besar walau sudah dikompres — coba foto lain.');
+          return;
+        }
 
-        data.galeri = data.galeri || [];
-        data.galeri.push({ url: url, caption: captionInput.value.trim() });
-        renderGaleriAdmin();
+        await db.collection('galeri').add({
+          data: base64,
+          caption: captionInput.value.trim(),
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
         fileInput.value = '';
         captionInput.value = '';
-        flashMsg('Foto diunggah. Klik "☁️ Simpan" biar tersimpan permanen & tampil di halaman publik.');
+        await loadGaleriAdmin();
+        flashMsg('Foto tersimpan & langsung tampil di halaman publik.');
       } catch (err) {
-        flashMsg('Gagal unggah: ' + (err && err.message ? err.message : 'cek aturan akses Storage.'));
+        flashMsg('Gagal unggah: ' + (err && err.message ? err.message : 'cek aturan akses Firestore.'));
       } finally {
         btn.disabled = false;
       }
