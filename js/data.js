@@ -1,9 +1,13 @@
 // ============================================================
-// SITE_DATA — sumber data tunggal untuk semua halaman website
-// (siswa, jadwal, piket, kas). Diedit lewat admin.html, lalu
-// hasilnya diunduh untuk menggantikan file ini di repo GitHub.
-// ============================================================
-const SITE_DATA = {
+// SITE_DATA — data cadangan (fallback) kalau Firebase belum
+// di-setup atau gagal diakses. Data asli & terbaru selalu datang
+// dari Firestore lewat admin.html.
+//
+// PENTING: pakai "var" (bukan "const"/"let") supaya saat main.js
+// menimpa window.SITE_DATA dengan data terbaru dari Firestore,
+// semua kode lain yang membaca "SITE_DATA" (tanpa "window.") ikut
+// melihat data yang sama — bukan dua salinan data yang terpisah.
+var SITE_DATA = {
 
   siswa: [
     { nama: "Nama Siswa 1", absen: "01", jk: "Laki-laki" },

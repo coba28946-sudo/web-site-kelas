@@ -241,8 +241,8 @@ function formatRupiah(num) {
 
 function renderSiswaFromData() {
   const body = document.getElementById('siswaBody');
-  if (!body || typeof SITE_DATA === 'undefined') return;
-  const list = SITE_DATA.siswa || [];
+  if (!body || typeof window.SITE_DATA === 'undefined') return;
+  const list = window.SITE_DATA.siswa || [];
   body.innerHTML = list.map((s, idx) => `
     <tr data-nama="${(s.nama || '').toLowerCase()}">
       <td class="no">${idx + 1}</td>
@@ -256,10 +256,10 @@ function renderSiswaFromData() {
 
 function renderJadwalFromData() {
   const wrap = document.getElementById('jadwalWrap');
-  if (!wrap || typeof SITE_DATA === 'undefined') return;
+  if (!wrap || typeof window.SITE_DATA === 'undefined') return;
   const days = ['senin', 'selasa', 'rabu', 'kamis', 'jumat'];
   wrap.innerHTML = days.map((d, i) => {
-    const items = (SITE_DATA.jadwal && SITE_DATA.jadwal[d]) || [];
+    const items = (window.SITE_DATA.jadwal && window.SITE_DATA.jadwal[d]) || [];
     const rows = items.map(it => `
       <div class="schedule-item${it.istirahat ? ' break' : ''}">
         <span class="jam">${it.jam}</span><span class="mapel">${it.mapel}</span>
@@ -270,11 +270,11 @@ function renderJadwalFromData() {
 
 function renderPiketFromData() {
   const wrap = document.getElementById('piketWrap');
-  if (!wrap || typeof SITE_DATA === 'undefined') return;
+  if (!wrap || typeof window.SITE_DATA === 'undefined') return;
   const days = ['senin', 'selasa', 'rabu', 'kamis', 'jumat'];
   const labels = { senin: 'Senin', selasa: 'Selasa', rabu: 'Rabu', kamis: 'Kamis', jumat: 'Jumat' };
   wrap.innerHTML = days.map((d, i) => {
-    const p = (SITE_DATA.piket && SITE_DATA.piket[d]) || { kelompok: '-', anggota: [], tugas: [] };
+    const p = (window.SITE_DATA.piket && window.SITE_DATA.piket[d]) || { kelompok: '-', anggota: [], tugas: [] };
     const chips = (p.anggota || []).map(n => `<span class="member-chip">${n}</span>`).join('') || '<span class="member-chip">Belum diisi</span>';
     const tasks = (p.tugas || []).map(t => `<div class="task-item"><span class="check-icon">✓</span> ${t}</div>`).join('');
     return `<div class="schedule-day${i === 0 ? ' active' : ''}" data-day="${d}">
@@ -290,8 +290,8 @@ function renderPiketFromData() {
 function renderKasFromData() {
   const summaryWrap = document.getElementById('kasSummary');
   const body = document.getElementById('kasBody');
-  if ((!summaryWrap && !body) || typeof SITE_DATA === 'undefined') return;
-  const trx = (SITE_DATA.kas && SITE_DATA.kas.transaksi) || [];
+  if ((!summaryWrap && !body) || typeof window.SITE_DATA === 'undefined') return;
+  const trx = (window.SITE_DATA.kas && window.SITE_DATA.kas.transaksi) || [];
   let masuk = 0, keluar = 0;
   trx.forEach(t => {
     if (t.tipe === 'masuk') masuk += Number(t.jumlah) || 0;
@@ -342,7 +342,7 @@ function loadSiteDataAndRender() {
     || document.getElementById('galeriGrid');
   if (!hasContainer) return;
 
-  const fallback = (typeof SITE_DATA !== 'undefined') ? SITE_DATA : null;
+  const fallback = (typeof window.SITE_DATA !== 'undefined') ? window.SITE_DATA : null;
 
   function renderWith(dataObj) {
     window.SITE_DATA = dataObj;
