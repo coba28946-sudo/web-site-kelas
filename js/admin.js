@@ -100,6 +100,7 @@
     setupPiketHandlers();
     setupKasHandlers();
     setupGaleriHandlers();
+    setupStrukturHandlers();
     loadInitialData();
     loadGaleriAdmin();
   }
@@ -116,6 +117,7 @@
       try {
         const fresh = await fetchFromFirestore();
         if (fresh) {
+          fresh.struktur = fresh.struktur || JSON.parse(JSON.stringify(SITE_DATA.struktur));
           data = fresh;
           originalData = JSON.parse(JSON.stringify(fresh));
           renderAll();
@@ -137,6 +139,7 @@
     renderJadwalAdmin();
     renderPiketAdmin();
     renderKasAdmin();
+    renderStrukturAdmin();
   }
 
   function formatRp(n) { return 'Rp ' + (Number(n) || 0).toLocaleString('id-ID'); }
@@ -158,7 +161,7 @@
 
   // ================= TOP ACTIONS =================
   function setupMainTabs() {
-    const TAB_IDS = ['siswa', 'jadwal', 'piket', 'kas', 'galeri'];
+    const TAB_IDS = ['siswa', 'jadwal', 'piket', 'kas', 'galeri', 'struktur'];
     document.querySelectorAll('.admin-tab').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.admin-tab').forEach(b => b.classList.toggle('active', b === btn));
@@ -201,7 +204,8 @@
         siswa: data.siswa,
         jadwal: data.jadwal,
         piket: data.piket,
-        kas: data.kas
+        kas: data.kas,
+        struktur: data.struktur
       });
       originalData = JSON.parse(JSON.stringify(data));
       flashMsg('Tersimpan — semua admin & pengunjung langsung lihat perubahan ini secara real-time.');
@@ -440,13 +444,18 @@
   // di dalam dokumen site/data — supaya gak kebentur batas ukuran
   // dokumen Firestore (1MB). Tiap foto dikompres dulu jadi base64
   // sebelum disimpan, jadi gak butuh Firebase Storage sama sekali.
-  let galeriList = []; // [{ id, url, caption }]
+  let galeriList = []; // [{ id, url, caption, kategori }]
 
   async function loadGaleriAdmin() {
     if (!db) { galeriList = []; renderGaleriAdmin(); return; }
     try {
       const snap = await db.collection('galeri').orderBy('createdAt', 'desc').get();
-      galeriList = snap.docs.map(doc => ({ id: doc.id, url: doc.data().data, caption: doc.data().caption || '' }));
+      galeriList = snap.docs.map(doc => ({
+        id: doc.id,
+        url: doc.data().data,
+        caption: doc.data().caption || '',
+        kategori: doc.data().kategori || ''
+      }));
     } catch (err) {
       galeriList = [];
     }
@@ -460,19 +469,21 @@
       <div class="admin-galeri-item">
         <img src="${g.url}" alt="foto ${i + 1}">
         <div class="admin-galeri-body">
+          <input type="text" class="admin-input" data-field="kategori" data-id="${g.id}" value="${escAttr(g.kategori)}" placeholder="Kategori" list="kategoriSuggest">
           <input type="text" class="admin-input" data-field="caption" data-id="${g.id}" value="${escAttr(g.caption)}" placeholder="Keterangan foto">
           <button class="btn-icon-danger" data-action="del-galeri" data-id="${g.id}">✕ Hapus</button>
         </div>
       </div>`).join('') || `<p style="color:var(--muted);font-size:.85rem;">Belum ada foto diunggah.</p>`;
 
-    grid.querySelectorAll('input[data-field="caption"]').forEach(el => {
+    grid.querySelectorAll('input[data-field="caption"], input[data-field="kategori"]').forEach(el => {
       el.addEventListener('change', async () => {
         const id = el.dataset.id;
+        const field = el.dataset.field;
         const item = galeriList.find(g => g.id === id);
-        if (item) item.caption = el.value;
+        if (item) item[field] = el.value;
         if (db) {
-          try { await db.collection('galeri').doc(id).update({ caption: el.value }); flashMsg('Keterangan foto disimpan.'); }
-          catch (err) { flashMsg('Gagal simpan keterangan.'); }
+          try { await db.collection('galeri').doc(id).update({ [field]: el.value }); flashMsg('Perubahan foto disimpan.'); }
+          catch (err) { flashMsg('Gagal simpan perubahan.'); }
         }
       });
     });
@@ -519,6 +530,7 @@
     const btn = document.getElementById('btnUploadGaleri');
     const fileInput = document.getElementById('galeriFileInput');
     const captionInput = document.getElementById('galeriCaptionInput');
+    const kategoriInput = document.getElementById('galeriKategoriInput');
     if (!btn) return;
 
     btn.addEventListener('click', async () => {
@@ -543,11 +555,13 @@
         await db.collection('galeri').add({
           data: base64,
           caption: captionInput.value.trim(),
+          kategori: kategoriInput.value.trim(),
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
         fileInput.value = '';
         captionInput.value = '';
+        kategoriInput.value = '';
         await loadGaleriAdmin();
         flashMsg('Foto tersimpan & langsung tampil di halaman publik.');
       } catch (err) {
@@ -556,5 +570,61 @@
         btn.disabled = false;
       }
     });
+  }
+
+  // ================= STRUKTUR KELAS =================
+  function renderStrukturAdmin() {
+    const waliInput = document.getElementById('strukturWaliInput');
+    const body = document.getElementById('adminStrukturBody');
+    if (!waliInput && !body) return;
+
+    if (!data.struktur) data.struktur = { waliKelas: { nama: '' }, pengurus: [] };
+    if (!data.struktur.waliKelas) data.struktur.waliKelas = { nama: '' };
+    if (!data.struktur.pengurus) data.struktur.pengurus = [];
+
+    if (waliInput) waliInput.value = data.struktur.waliKelas.nama || '';
+
+    if (body) {
+      const list = data.struktur.pengurus;
+      body.innerHTML = list.map((p, i) => `
+        <tr>
+          <td><input type="text" class="admin-input" data-field="jabatan" data-idx="${i}" value="${escAttr(p.jabatan)}"></td>
+          <td><input type="text" class="admin-input" data-field="nama" data-idx="${i}" value="${escAttr(p.nama)}"></td>
+          <td><button class="btn-icon-danger" data-action="del-pengurus" data-idx="${i}" title="Hapus pengurus">✕</button></td>
+        </tr>`).join('') || `<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px;">Belum ada data pengurus.</td></tr>`;
+
+      body.querySelectorAll('[data-field]').forEach(el => {
+        el.addEventListener('input', () => {
+          const idx = Number(el.dataset.idx);
+          list[idx][el.dataset.field] = el.value;
+        });
+      });
+      body.querySelectorAll('[data-action="del-pengurus"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          list.splice(Number(btn.dataset.idx), 1);
+          renderStrukturAdmin();
+        });
+      });
+    }
+  }
+
+  function setupStrukturHandlers() {
+    const waliInput = document.getElementById('strukturWaliInput');
+    if (waliInput) {
+      waliInput.addEventListener('input', () => {
+        if (!data.struktur) data.struktur = { waliKelas: { nama: '' }, pengurus: [] };
+        if (!data.struktur.waliKelas) data.struktur.waliKelas = { nama: '' };
+        data.struktur.waliKelas.nama = waliInput.value;
+      });
+    }
+    const btnAdd = document.getElementById('btnAddPengurus');
+    if (btnAdd) {
+      btnAdd.addEventListener('click', () => {
+        if (!data.struktur) data.struktur = { waliKelas: { nama: '' }, pengurus: [] };
+        if (!data.struktur.pengurus) data.struktur.pengurus = [];
+        data.struktur.pengurus.push({ jabatan: 'Jabatan Baru', nama: 'Nama Siswa' });
+        renderStrukturAdmin();
+      });
+    }
   }
 })();

@@ -17,7 +17,7 @@
 <meta name="description" content="Susunan wali kelas dan pengurus kelas X TJKT 1 tahun ajaran 2026/2027.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="css/style.css">
 <script>
 (function(){
   var t = localStorage.getItem('theme');
@@ -37,11 +37,12 @@
     <div class="logo"><span class="logo-mark">TJ</span> X TJKT 1</div>
     <div class="nav-links">
       <a href="index.html">Beranda</a>
-      <a href="tentang.html">Tentang TJKT</a>
       <a href="struktur.html" class="active">Struktur Kelas</a>
       <a href="galeri.html">Galeri</a>
       <a href="siswa.html">Daftar Siswa</a>
       <a href="jadwal.html">Jadwal</a>
+      <a href="piket.html">Piket</a>
+      <a href="kas.html">Kas</a>
     </div>
     <div class="nav-actions">
       <button class="theme-toggle" id="themeToggle" aria-label="Ganti tema terang/gelap">
@@ -55,11 +56,12 @@
 
 <div class="mobile-menu" id="mobileMenu">
   <a href="index.html">Beranda</a>
-  <a href="tentang.html">Tentang TJKT</a>
   <a href="struktur.html" class="active">Struktur Kelas</a>
   <a href="galeri.html">Galeri</a>
   <a href="siswa.html">Daftar Siswa</a>
   <a href="jadwal.html">Jadwal</a>
+  <a href="piket.html">Piket</a>
+  <a href="kas.html">Kas</a>
 </div>
 
 <header class="page-head struktur">
@@ -98,29 +100,16 @@
 
 <section id="struktur" class="struktur">
   <div class="container">
-    <div class="wali-card fade-up">
-      <div class="avatar">NW</div>
+    <div class="wali-card fade-up" id="strukturWali">
+      <div class="avatar">…</div>
       <div class="wali-info">
         <div class="tag">Wali Kelas</div>
-        <h3>Nama Wali Kelas</h3>
-        <span>Pembimbing X TJKT 1 · Tahun Ajaran 2026/2027</span>
+        <h3>Memuat data...</h3>
+        <span>&nbsp;</span>
       </div>
     </div>
 
-    <div class="pengurus-grid">
-      <div class="pengurus-card tilt fade-up"><div class="avatar" style="background:linear-gradient(135deg,#22d3ee,#3b82f6)">NS</div><div class="jabatan">Ketua Kelas</div><div class="nama">Nama Siswa</div></div>
-      <div class="pengurus-card tilt fade-up"><div class="avatar" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)">NS</div><div class="jabatan">Wakil Ketua</div><div class="nama">Nama Siswa</div></div>
-      <div class="pengurus-card tilt fade-up"><div class="avatar" style="background:linear-gradient(135deg,#8b5cf6,#22d3ee)">NS</div><div class="jabatan">Sekretaris 1</div><div class="nama">Nama Siswa</div></div>
-      <div class="pengurus-card tilt fade-up"><div class="avatar" style="background:linear-gradient(135deg,#22d3ee,#8b5cf6)">NS</div><div class="jabatan">Sekretaris 2</div><div class="nama">Nama Siswa</div></div>
-      <div class="pengurus-card tilt fade-up"><div class="avatar" style="background:linear-gradient(135deg,#3b82f6,#22d3ee)">NS</div><div class="jabatan">Bendahara 1</div><div class="nama">Nama Siswa</div></div>
-      <div class="pengurus-card tilt fade-up"><div class="avatar" style="background:linear-gradient(135deg,#8b5cf6,#3b82f6)">NS</div><div class="jabatan">Bendahara 2</div><div class="nama">Nama Siswa</div></div>
-      <div class="pengurus-card tilt fade-up"><div class="avatar" style="background:linear-gradient(135deg,#22d3ee,#3b82f6)">NS</div><div class="jabatan">Seksi Kebersihan</div><div class="nama">Nama Siswa</div></div>
-      <div class="pengurus-card tilt fade-up"><div class="avatar" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)">NS</div><div class="jabatan">Seksi Keamanan</div><div class="nama">Nama Siswa</div></div>
-      <div class="pengurus-card tilt fade-up"><div class="avatar" style="background:linear-gradient(135deg,#8b5cf6,#22d3ee)">NS</div><div class="jabatan">Seksi Olahraga</div><div class="nama">Nama Siswa</div></div>
-      <div class="pengurus-card tilt fade-up"><div class="avatar" style="background:linear-gradient(135deg,#22d3ee,#8b5cf6)">NS</div><div class="jabatan">Seksi Rohani</div><div class="nama">Nama Siswa</div></div>
-      <div class="pengurus-card tilt fade-up"><div class="avatar" style="background:linear-gradient(135deg,#3b82f6,#22d3ee)">NS</div><div class="jabatan">Seksi Perlengkapan</div><div class="nama">Nama Siswa</div></div>
-      <div class="pengurus-card tilt fade-up"><div class="avatar" style="background:linear-gradient(135deg,#8b5cf6,#3b82f6)">NS</div><div class="jabatan">Seksi Sosial</div><div class="nama">Nama Siswa</div></div>
-    </div>
+    <div class="pengurus-grid" id="strukturGrid"></div>
   </div>
 </section>
 
@@ -135,6 +124,10 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 
-<script src="main.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="js/data.js"></script>
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

@@ -153,6 +153,24 @@ var SITE_DATA = {
   // admin.html, otomatis diganti foto asli.
   galeri: [
     // { url: "https://...", caption: "Foto Kelas Bersama" }
-  ]
+  ],
+
+  struktur: {
+    waliKelas: { nama: "Nama Wali Kelas" },
+    pengurus: [
+      { jabatan: "Ketua Kelas", nama: "Nama Siswa" },
+      { jabatan: "Wakil Ketua", nama: "Nama Siswa" },
+      { jabatan: "Sekretaris 1", nama: "Nama Siswa" },
+      { jabatan: "Sekretaris 2", nama: "Nama Siswa" },
+      { jabatan: "Bendahara 1", nama: "Nama Siswa" },
+      { jabatan: "Bendahara 2", nama: "Nama Siswa" },
+      { jabatan: "Seksi Kebersihan", nama: "Nama Siswa" },
+      { jabatan: "Seksi Keamanan", nama: "Nama Siswa" },
+      { jabatan: "Seksi Olahraga", nama: "Nama Siswa" },
+      { jabatan: "Seksi Rohani", nama: "Nama Siswa" },
+      { jabatan: "Seksi Perlengkapan", nama: "Nama Siswa" },
+      { jabatan: "Seksi Sosial", nama: "Nama Siswa" }
+    ]
+  }
 
 };

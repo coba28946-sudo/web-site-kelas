@@ -319,17 +319,142 @@ function renderKasFromData() {
   }
 }
 
+function renderStrukturFromData() {
+  const waliWrap = document.getElementById('strukturWali');
+  const grid = document.getElementById('strukturGrid');
+  if ((!waliWrap && !grid) || typeof window.SITE_DATA === 'undefined') return;
+
+  const s = window.SITE_DATA.struktur || { waliKelas: { nama: '-' }, pengurus: [] };
+
+  function inisial(nama) {
+    return (nama || '').trim().split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase() || '-';
+  }
+
+  if (waliWrap) {
+    const nama = (s.waliKelas && s.waliKelas.nama) || '-';
+    waliWrap.innerHTML = `
+      <div class="avatar">${inisial(nama)}</div>
+      <div class="wali-info">
+        <div class="tag">Wali Kelas</div>
+        <h3>${nama}</h3>
+        <span>Pembimbing X TJKT 1 · Tahun Ajaran 2026/2027</span>
+      </div>`;
+  }
+
+  if (grid) {
+    const gradients = [
+      'linear-gradient(135deg,#22d3ee,#3b82f6)',
+      'linear-gradient(135deg,#3b82f6,#8b5cf6)',
+      'linear-gradient(135deg,#8b5cf6,#22d3ee)',
+      'linear-gradient(135deg,#22d3ee,#8b5cf6)',
+      'linear-gradient(135deg,#3b82f6,#22d3ee)',
+      'linear-gradient(135deg,#8b5cf6,#3b82f6)'
+    ];
+    const list = s.pengurus || [];
+    grid.innerHTML = list.map((p, i) => `
+      <div class="pengurus-card tilt fade-up">
+        <div class="avatar" style="background:${gradients[i % gradients.length]}">${inisial(p.nama)}</div>
+        <div class="jabatan">${p.jabatan || ''}</div>
+        <div class="nama">${p.nama || ''}</div>
+      </div>`).join('') || `<p style="color:var(--muted);">Belum ada data pengurus.</p>`;
+    grid.querySelectorAll('.fade-up').forEach(el => el.classList.add('visible'));
+  }
+}
+
+let galeriFullList = [];
+let galeriView = 'folders'; // 'folders' atau 'photos'
+let galeriActiveKategori = null;
+
 function renderGaleriFromData(list) {
   const grid = document.getElementById('galeriGrid');
   if (!grid) return;
   list = list || [];
   if (!list.length) return; // biarkan kartu placeholder bawaan tetap tampil
-  grid.innerHTML = list.map((g, i) => `
-    <div class="galeri-item has-photo fade-up${i === 0 ? ' wide tall' : ''}">
+
+  galeriFullList = list;
+  galeriView = 'folders';
+  galeriActiveKategori = null;
+  renderGaleriView();
+}
+
+function getGaleriFolders() {
+  const map = {};
+  galeriFullList.forEach(g => {
+    const k = (g.kategori || '').trim() || 'Lainnya';
+    if (!map[k]) map[k] = [];
+    map[k].push(g);
+  });
+  return map;
+}
+
+function removeGaleriBackBtn() {
+  const btn = document.getElementById('galeriBackBtn');
+  if (btn) btn.remove();
+}
+
+function insertGaleriBackBtn() {
+  removeGaleriBackBtn();
+  const grid = document.getElementById('galeriGrid');
+  const btn = document.createElement('button');
+  btn.id = 'galeriBackBtn';
+  btn.className = 'galeri-back-btn fade-up visible';
+  btn.innerHTML = `← Kembali ke Kategori <span class="folder-current">(${galeriActiveKategori})</span>`;
+  btn.onclick = () => {
+    galeriView = 'folders';
+    renderGaleriView();
+  };
+  grid.parentNode.insertBefore(btn, grid);
+}
+
+function renderGaleriView() {
+  const grid = document.getElementById('galeriGrid');
+  if (!grid) return;
+  removeGaleriBackBtn();
+
+  const folders = getGaleriFolders();
+  const names = Object.keys(folders);
+
+  // Kalau cuma ada 1 "kategori" (termasuk semua yang gak dikategorikan
+  // masuk "Lainnya"), langsung tampil foto-fotonya, gak usah pakai folder.
+  if (galeriView === 'folders' && names.length <= 1) {
+    galeriView = 'photos';
+    galeriActiveKategori = names[0] || 'Lainnya';
+  }
+
+  if (galeriView === 'folders') {
+    grid.innerHTML = names.map(name => {
+      const items = folders[name];
+      const cover = items[0];
+      return `
+      <div class="galeri-folder fade-up visible" data-kategori="${name}">
+        <div class="galeri-folder-cover"><img src="${cover.url}" alt="${name}" loading="lazy"></div>
+        <div class="galeri-folder-info">
+          <span class="folder-icon">📁</span>
+          <div>
+            <div class="folder-name">${name}</div>
+            <div class="folder-count">${items.length} foto</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    grid.querySelectorAll('.galeri-folder').forEach(card => {
+      card.onclick = () => {
+        galeriView = 'photos';
+        galeriActiveKategori = card.dataset.kategori;
+        renderGaleriView();
+      };
+    });
+    return;
+  }
+
+  // galeriView === 'photos'
+  if (names.length > 1) insertGaleriBackBtn();
+  const items = folders[galeriActiveKategori] || [];
+  grid.innerHTML = items.map((g, i) => `
+    <div class="galeri-item has-photo fade-up visible${i === 0 ? ' wide tall' : ''}">
       <img src="${g.url}" alt="${(g.caption || 'Foto kelas').replace(/"/g, '&quot;')}" loading="lazy">
       <div class="galeri-overlay"><span>${g.caption || ''}</span></div>
     </div>`).join('');
-  grid.querySelectorAll('.fade-up').forEach(el => el.classList.add('visible'));
 }
 
 // ===== MUAT DATA (Firebase Firestore, real-time; fallback ke js/data.js) =====
@@ -339,7 +464,9 @@ function loadSiteDataAndRender() {
     || document.getElementById('piketWrap')
     || document.getElementById('kasSummary')
     || document.getElementById('kasBody')
-    || document.getElementById('galeriGrid');
+    || document.getElementById('galeriGrid')
+    || document.getElementById('strukturWali')
+    || document.getElementById('strukturGrid');
   if (!hasContainer) return;
 
   const fallback = (typeof window.SITE_DATA !== 'undefined') ? window.SITE_DATA : null;
@@ -350,6 +477,7 @@ function loadSiteDataAndRender() {
     renderJadwalFromData();
     renderPiketFromData();
     renderKasFromData();
+    renderStrukturFromData();
     initDayTabs();
   }
 
@@ -393,7 +521,7 @@ function loadSiteDataAndRender() {
     try {
       db.collection('galeri').orderBy('createdAt', 'desc').onSnapshot(
         (snap) => {
-          const list = snap.docs.map(doc => ({ url: doc.data().data, caption: doc.data().caption || '' }));
+          const list = snap.docs.map(doc => ({ url: doc.data().data, caption: doc.data().caption || '', kategori: doc.data().kategori || '' }));
           renderGaleriFromData(list);
         },
         () => { if (fallback) renderGaleriFromData(fallback.galeri); }

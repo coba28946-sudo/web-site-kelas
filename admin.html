@@ -62,6 +62,7 @@
       <button class="admin-tab" data-tab="piket">🧹 Piket</button>
       <button class="admin-tab" data-tab="kas">💰 Kas</button>
       <button class="admin-tab" data-tab="galeri">📷 Galeri</button>
+      <button class="admin-tab" data-tab="struktur">🧩 Struktur Kelas</button>
     </div>
 
     <!-- PANEL: SISWA -->
@@ -156,10 +157,42 @@
       </div>
       <div class="admin-upload-row">
         <input type="file" id="galeriFileInput" accept="image/*">
-        <input type="text" class="admin-input" id="galeriCaptionInput" placeholder="Keterangan foto (opsional)" style="max-width:260px;">
+        <input type="text" class="admin-input" id="galeriKategoriInput" list="kategoriSuggest" placeholder="Kategori (cth: Praktik)" style="max-width:200px;">
+        <datalist id="kategoriSuggest">
+          <option value="Kegiatan Belajar">
+          <option value="Praktik">
+          <option value="Acara Kelas">
+          <option value="Kegiatan Sosial">
+          <option value="Lomba & Prestasi">
+          <option value="Foto Bersama">
+        </datalist>
+        <input type="text" class="admin-input" id="galeriCaptionInput" placeholder="Keterangan foto (opsional)" style="max-width:220px;">
         <button class="btn btn-sm btn-primary" id="btnUploadGaleri">⬆️ Upload Foto</button>
       </div>
       <div class="admin-galeri-grid" id="adminGaleriGrid"></div>
+    </div>
+
+    <!-- PANEL: STRUKTUR KELAS -->
+    <div class="admin-panel" id="panel-struktur">
+      <div class="admin-panel-head">
+        <h3>Struktur Kelas</h3>
+      </div>
+
+      <label class="admin-subtitle">Nama Wali Kelas</label>
+      <input type="text" class="admin-input" id="strukturWaliInput" placeholder="Nama wali kelas">
+
+      <div class="admin-panel-head">
+        <p class="admin-subtitle" style="margin:22px 0 0;">Daftar Pengurus</p>
+        <button class="btn btn-sm btn-outline" id="btnAddPengurus">+ Tambah Pengurus</button>
+      </div>
+      <div class="admin-panel-scroll">
+        <table class="admin-table">
+          <thead>
+            <tr><th style="width:220px;">Jabatan</th><th>Nama</th><th style="width:40px;"></th></tr>
+          </thead>
+          <tbody id="adminStrukturBody"></tbody>
+        </table>
+      </div>
     </div>
 
   </div>
