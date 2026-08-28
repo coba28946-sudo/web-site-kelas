@@ -152,7 +152,16 @@ var SITE_DATA = {
   // kartu ikon placeholder yang sudah ada. Setelah upload foto lewat
   // admin.html, otomatis diganti foto asli.
   galeri: [
-    // { url: "https://...", caption: "Foto Kelas Bersama" }
+    // { url: "https://...", caption: "Foto Kelas Bersama", kategori: "Praktik" }
+  ],
+
+  // Daftar nama folder/kategori galeri, dikelola lewat admin.html.
+  // Folder tetap muncul di galeri.html walau belum ada fotonya.
+  galeriKategori: [
+    "Kegiatan Belajar",
+    "Praktik",
+    "Acara Kelas",
+    "Kegiatan Sosial"
   ],
 
   struktur: {

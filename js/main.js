@@ -362,16 +362,19 @@ function renderStrukturFromData() {
 }
 
 let galeriFullList = [];
+let galeriKategoriList = [];
 let galeriView = 'folders'; // 'folders' atau 'photos'
 let galeriActiveKategori = null;
+
+function setGaleriFolders(list) {
+  galeriKategoriList = list || [];
+  renderGaleriView();
+}
 
 function renderGaleriFromData(list) {
   const grid = document.getElementById('galeriGrid');
   if (!grid) return;
-  list = list || [];
-  if (!list.length) return; // biarkan kartu placeholder bawaan tetap tampil
-
-  galeriFullList = list;
+  galeriFullList = list || [];
   galeriView = 'folders';
   galeriActiveKategori = null;
   renderGaleriView();
@@ -379,6 +382,10 @@ function renderGaleriFromData(list) {
 
 function getGaleriFolders() {
   const map = {};
+  // Folder eksplisit (dari admin) tetap muncul walau belum ada fotonya.
+  galeriKategoriList.forEach(name => {
+    if (name && !map[name]) map[name] = [];
+  });
   galeriFullList.forEach(g => {
     const k = (g.kategori || '').trim() || 'Lainnya';
     if (!map[k]) map[k] = [];
@@ -409,6 +416,11 @@ function insertGaleriBackBtn() {
 function renderGaleriView() {
   const grid = document.getElementById('galeriGrid');
   if (!grid) return;
+
+  // Kalau belum ada folder dan belum ada foto sama sekali, biarkan
+  // kartu ikon placeholder bawaan (statis di HTML) tetap tampil.
+  if (!galeriKategoriList.length && !galeriFullList.length) return;
+
   removeGaleriBackBtn();
 
   const folders = getGaleriFolders();
@@ -425,9 +437,12 @@ function renderGaleriView() {
     grid.innerHTML = names.map(name => {
       const items = folders[name];
       const cover = items[0];
+      const coverHtml = cover
+        ? `<img src="${cover.url}" alt="${name}" loading="lazy">`
+        : `<div class="galeri-folder-empty"><span>📁</span></div>`;
       return `
       <div class="galeri-folder fade-up visible" data-kategori="${name}">
-        <div class="galeri-folder-cover"><img src="${cover.url}" alt="${name}" loading="lazy"></div>
+        <div class="galeri-folder-cover">${coverHtml}</div>
         <div class="galeri-folder-info">
           <span class="folder-icon">📁</span>
           <div>
@@ -450,6 +465,10 @@ function renderGaleriView() {
   // galeriView === 'photos'
   if (names.length > 1) insertGaleriBackBtn();
   const items = folders[galeriActiveKategori] || [];
+  if (!items.length) {
+    grid.innerHTML = `<p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:30px;">Belum ada foto di folder ini.</p>`;
+    return;
+  }
   grid.innerHTML = items.map((g, i) => `
     <div class="galeri-item has-photo fade-up visible${i === 0 ? ' wide tall' : ''}">
       <img src="${g.url}" alt="${(g.caption || 'Foto kelas').replace(/"/g, '&quot;')}" loading="lazy">
@@ -478,6 +497,7 @@ function loadSiteDataAndRender() {
     renderPiketFromData();
     renderKasFromData();
     renderStrukturFromData();
+    setGaleriFolders(dataObj.galeriKategori);
     initDayTabs();
   }
 
@@ -485,8 +505,7 @@ function loadSiteDataAndRender() {
     && FIREBASE_CONFIG.apiKey && !String(FIREBASE_CONFIG.apiKey).includes('TEMPEL');
 
   if (!firebaseConfigured || typeof firebase === 'undefined') {
-    if (fallback) renderWith(fallback);
-    if (fallback) renderGaleriFromData(fallback.galeri);
+    if (fallback) { renderWith(fallback); renderGaleriFromData(fallback.galeri); }
     return;
   }
 

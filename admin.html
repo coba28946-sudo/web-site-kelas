@@ -155,17 +155,20 @@
       <div class="admin-panel-head">
         <h3>Galeri Foto</h3>
       </div>
+
+      <label class="admin-subtitle" style="margin-top:0;">Folder Kategori</label>
+      <div class="admin-folder-manage">
+        <input type="text" class="admin-input" id="galeriFolderNewInput" placeholder="Nama folder baru (cth: Praktik)">
+        <button class="btn btn-sm btn-outline" id="btnAddFolder">+ Tambah Folder</button>
+      </div>
+      <div class="admin-folder-chips" id="adminFolderChips"></div>
+
+      <p class="admin-subtitle">Upload Foto</p>
       <div class="admin-upload-row">
         <input type="file" id="galeriFileInput" accept="image/*">
-        <input type="text" class="admin-input" id="galeriKategoriInput" list="kategoriSuggest" placeholder="Kategori (cth: Praktik)" style="max-width:200px;">
-        <datalist id="kategoriSuggest">
-          <option value="Kegiatan Belajar">
-          <option value="Praktik">
-          <option value="Acara Kelas">
-          <option value="Kegiatan Sosial">
-          <option value="Lomba & Prestasi">
-          <option value="Foto Bersama">
-        </datalist>
+        <select class="admin-input" id="galeriKategoriInput" style="max-width:200px;">
+          <option value="">Pilih folder...</option>
+        </select>
         <input type="text" class="admin-input" id="galeriCaptionInput" placeholder="Keterangan foto (opsional)" style="max-width:220px;">
         <button class="btn btn-sm btn-primary" id="btnUploadGaleri">⬆️ Upload Foto</button>
       </div>

@@ -319,6 +319,10 @@ section{padding:110px 0;position:relative;}
 .galeri-folder:hover{transform:translateY(-4px);border-color:rgba(34,211,238,.4);}
 .galeri-folder-cover{position:absolute;inset:0;}
 .galeri-folder-cover img{width:100%;height:100%;object-fit:cover;filter:brightness(.55);}
+.galeri-folder-empty{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  background:var(--bg-soft);font-size:2.2rem;opacity:.5;
+}
 .galeri-folder-info{
   position:absolute;inset:0;display:flex;align-items:flex-end;gap:12px;padding:18px;
   background:linear-gradient(0deg,rgba(7,11,20,.92),transparent 60%);
@@ -738,6 +742,24 @@ table.admin-table{min-width:520px;}
   background:var(--bg-soft);border:1px solid var(--border);border-radius:12px;
   padding:16px;margin-bottom:22px;
 }
+.admin-folder-manage{
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px;
+}
+.admin-folder-chips{
+  display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;min-height:20px;
+}
+.admin-folder-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Space Grotesk';font-size:.82rem;font-weight:600;
+  background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);color:var(--cyan);
+  padding:6px 8px 6px 14px;border-radius:999px;
+}
+.admin-folder-chip button{
+  width:18px;height:18px;border-radius:50%;flex-shrink:0;
+  background:rgba(248,113,113,.15);border:none;color:#f87171;
+  cursor:pointer;font-size:.65rem;line-height:1;
+}
+.admin-folder-chip button:hover{background:rgba(248,113,113,.3);}
 .admin-upload-row input[type="file"]{
   font-family:'Poppins';font-size:.82rem;color:var(--muted);flex:1;min-width:180px;
 }

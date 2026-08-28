@@ -118,6 +118,7 @@
         const fresh = await fetchFromFirestore();
         if (fresh) {
           fresh.struktur = fresh.struktur || JSON.parse(JSON.stringify(SITE_DATA.struktur));
+          fresh.galeriKategori = fresh.galeriKategori || JSON.parse(JSON.stringify(SITE_DATA.galeriKategori || []));
           data = fresh;
           originalData = JSON.parse(JSON.stringify(fresh));
           renderAll();
@@ -140,6 +141,8 @@
     renderPiketAdmin();
     renderKasAdmin();
     renderStrukturAdmin();
+    renderFolderChips();
+    populateKategoriSelect();
   }
 
   function formatRp(n) { return 'Rp ' + (Number(n) || 0).toLocaleString('id-ID'); }
@@ -205,7 +208,8 @@
         jadwal: data.jadwal,
         piket: data.piket,
         kas: data.kas,
-        struktur: data.struktur
+        struktur: data.struktur,
+        galeriKategori: data.galeriKategori
       });
       originalData = JSON.parse(JSON.stringify(data));
       flashMsg('Tersimpan — semua admin & pengunjung langsung lihat perubahan ini secara real-time.');
@@ -465,17 +469,22 @@
   function renderGaleriAdmin() {
     const grid = document.getElementById('adminGaleriGrid');
     if (!grid) return;
+    const folders = data.galeriKategori || [];
+    const folderOptions = folders.map(f => `<option value="${escAttr(f)}">${escAttr(f)}</option>`).join('');
     grid.innerHTML = galeriList.map((g, i) => `
       <div class="admin-galeri-item">
         <img src="${g.url}" alt="foto ${i + 1}">
         <div class="admin-galeri-body">
-          <input type="text" class="admin-input" data-field="kategori" data-id="${g.id}" value="${escAttr(g.kategori)}" placeholder="Kategori" list="kategoriSuggest">
+          <select class="admin-input" data-field="kategori" data-id="${g.id}">
+            <option value=""${!g.kategori ? ' selected' : ''}>Tanpa folder</option>
+            ${folders.map(f => `<option value="${escAttr(f)}"${f === g.kategori ? ' selected' : ''}>${escAttr(f)}</option>`).join('')}
+          </select>
           <input type="text" class="admin-input" data-field="caption" data-id="${g.id}" value="${escAttr(g.caption)}" placeholder="Keterangan foto">
           <button class="btn-icon-danger" data-action="del-galeri" data-id="${g.id}">✕ Hapus</button>
         </div>
       </div>`).join('') || `<p style="color:var(--muted);font-size:.85rem;">Belum ada foto diunggah.</p>`;
 
-    grid.querySelectorAll('input[data-field="caption"], input[data-field="kategori"]').forEach(el => {
+    grid.querySelectorAll('input[data-field="caption"], select[data-field="kategori"]').forEach(el => {
       el.addEventListener('change', async () => {
         const id = el.dataset.id;
         const field = el.dataset.field;
@@ -500,6 +509,35 @@
         flashMsg('Foto dihapus.');
       });
     });
+  }
+
+  // ---- Kelola folder/kategori galeri ----
+  function renderFolderChips() {
+    const wrap = document.getElementById('adminFolderChips');
+    if (!wrap) return;
+    const folders = data.galeriKategori || [];
+    wrap.innerHTML = folders.map((name, i) => `
+      <span class="admin-folder-chip">${escAttr(name)} <button data-action="del-folder" data-idx="${i}" title="Hapus folder">✕</button></span>
+    `).join('') || `<p style="color:var(--muted);font-size:.82rem;">Belum ada folder — tambah dulu sebelum upload foto (opsional, foto tanpa folder tetap bisa diupload).</p>`;
+
+    wrap.querySelectorAll('[data-action="del-folder"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!confirm('Hapus folder ini? Foto yang sudah ada di folder ini TIDAK ikut terhapus, cuma jadi "tanpa folder".')) return;
+        data.galeriKategori.splice(Number(btn.dataset.idx), 1);
+        renderFolderChips();
+        populateKategoriSelect();
+        renderGaleriAdmin();
+      });
+    });
+  }
+
+  function populateKategoriSelect() {
+    const select = document.getElementById('galeriKategoriInput');
+    if (!select) return;
+    const folders = data.galeriKategori || [];
+    const current = select.value;
+    select.innerHTML = '<option value="">Pilih folder...</option>' + folders.map(f => `<option value="${escAttr(f)}">${escAttr(f)}</option>`).join('');
+    if (folders.includes(current)) select.value = current;
   }
 
   // Kecilin & kompres foto lewat <canvas> sebelum disimpan sebagai
@@ -527,6 +565,23 @@
   }
 
   function setupGaleriHandlers() {
+    const btnAddFolder = document.getElementById('btnAddFolder');
+    const folderInput = document.getElementById('galeriFolderNewInput');
+    if (btnAddFolder && folderInput) {
+      btnAddFolder.addEventListener('click', () => {
+        const name = folderInput.value.trim();
+        if (!name) { flashMsg('Isi nama folder dulu.'); return; }
+        if (!data.galeriKategori) data.galeriKategori = [];
+        if (data.galeriKategori.includes(name)) { flashMsg('Folder itu udah ada.'); return; }
+        data.galeriKategori.push(name);
+        folderInput.value = '';
+        renderFolderChips();
+        populateKategoriSelect();
+        renderGaleriAdmin();
+        flashMsg('Folder ditambahkan. Klik "☁️ Simpan" biar tersimpan permanen.');
+      });
+    }
+
     const btn = document.getElementById('btnUploadGaleri');
     const fileInput = document.getElementById('galeriFileInput');
     const captionInput = document.getElementById('galeriCaptionInput');
